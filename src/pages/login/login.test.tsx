@@ -11,7 +11,7 @@ describe("Login Page", () => {
         // findBy : async
         // queryBy : null
         expect(
-            screen.getByRole("heading", { name: "Sign in" })
+            screen.getByText("Sign in", { selector: "div" })
         ).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Username")).toBeInTheDocument();
         expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
