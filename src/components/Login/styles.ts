@@ -3,3 +3,7 @@ export const loginCardTitle = {
     fontSize: 16,
     justifyContent: "center"
 };
+
+export const loginFormButton = {
+    width: "100%"
+};

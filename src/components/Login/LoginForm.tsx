@@ -2,7 +2,7 @@ import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Button, Checkbox, Flex, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 
-import { loginFormButton } from "./styles/LoginForm";
+import { loginFormButton } from "./styles";
 
 export const LoginForm = () => {
     return (

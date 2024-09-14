@@ -1,20 +1,11 @@
-import { LockFilled } from "@ant-design/icons";
-import { Card, Space } from "antd";
+import { Card } from "antd";
 
 import { LoginForm } from "./LoginForm";
-import { loginCardTitle } from "./styles/LoginCard";
+import { LoginTitle } from "./LoginTitle";
 
 export const LoginCard = () => {
     return (
-        <Card
-            bordered={false}
-            style={{ width: 300 }}
-            title={
-                <Space style={loginCardTitle}>
-                    <LockFilled /> Sign in
-                </Space>
-            }
-        >
+        <Card bordered={false} style={{ width: 300 }} title={<LoginTitle />}>
             <LoginForm />
         </Card>
     );
