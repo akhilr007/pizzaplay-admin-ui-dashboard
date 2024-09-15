@@ -6,7 +6,12 @@ import { loginFormButton } from "./styles";
 
 export const LoginForm = () => {
     return (
-        <Form initialValues={{ remember: true }}>
+        <Form
+            initialValues={{ remember: true }}
+            onFinish={(values) => {
+                console.log(values);
+            }}
+        >
             <FormItem
                 name="username"
                 rules={[
