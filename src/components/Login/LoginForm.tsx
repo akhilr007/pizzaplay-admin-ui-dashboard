@@ -1,17 +1,41 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Flex, Form, Input } from "antd";
+import { useMutation } from "@tanstack/react-query";
+import { Alert, Button, Checkbox, Flex, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 
+import { login } from "../../http/api";
 import { loginFormButton } from "./styles";
+import { errorStyle } from "./styles";
+import { Credentials } from "./types";
+
+const loginUser = async (credentials: Credentials) => {
+    const { data } = await login(credentials);
+    return data;
+};
 
 export const LoginForm = () => {
+    const { mutate, isPending, isError, error } = useMutation({
+        mutationKey: ["login"],
+        mutationFn: loginUser,
+        onSuccess: async () => {
+            console.log("login successful");
+        }
+    });
+
     return (
         <Form
             initialValues={{ remember: true }}
             onFinish={(values) => {
-                console.log(values);
+                mutate({ email: values.username, password: values.password });
             }}
         >
+            {isError && (
+                <Alert
+                    style={errorStyle}
+                    type="error"
+                    message={error?.message}
+                />
+            )}
             <FormItem
                 name="username"
                 rules={[
@@ -57,6 +81,7 @@ export const LoginForm = () => {
                     type="primary"
                     htmlType="submit"
                     style={loginFormButton}
+                    loading={isPending}
                 >
                     Sign in
                 </Button>

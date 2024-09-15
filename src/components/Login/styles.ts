@@ -7,3 +7,7 @@ export const loginCardTitle = {
 export const loginFormButton = {
     width: "100%"
 };
+
+export const errorStyle = {
+    marginBottom: 24
+};
