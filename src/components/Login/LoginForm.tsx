@@ -1,9 +1,9 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Alert, Button, Checkbox, Flex, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 
-import { login } from "../../http/api";
+import { login, whoami } from "../../http/api";
 import { loginFormButton } from "./styles";
 import { errorStyle } from "./styles";
 import { Credentials } from "./types";
@@ -13,12 +13,24 @@ const loginUser = async (credentials: Credentials) => {
     return data;
 };
 
+const getSelf = async () => {
+    const { data } = await whoami();
+    return data;
+};
+
 export const LoginForm = () => {
+    const { data: userData, refetch } = useQuery({
+        queryKey: ["whoami"],
+        queryFn: getSelf,
+        enabled: false
+    });
+
     const { mutate, isPending, isError, error } = useMutation({
         mutationKey: ["login"],
         mutationFn: loginUser,
         onSuccess: async () => {
-            console.log("login successful");
+            refetch();
+            console.log("userdata: ", userData);
         }
     });
 
