@@ -6,3 +6,5 @@ export const login = (credentials: Credentials) =>
     api.post("/auth/login", credentials);
 
 export const whoami = () => api.get("/auth/whoami");
+
+export const logout = () => api.post("/auth/logout");
