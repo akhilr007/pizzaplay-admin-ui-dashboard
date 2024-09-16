@@ -1,41 +1,14 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { useMutation, useQuery } from "@tanstack/react-query";
 import { Alert, Button, Checkbox, Flex, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 
-import { login, whoami } from "../../http/api";
-import { useAuthStore } from "../../store";
+import { useLogin } from "../../hooks/useLogin";
 import { loginFormButton } from "./styles";
 import { errorStyle } from "./styles";
-import { Credentials } from "./types";
-
-const loginUser = async (credentials: Credentials) => {
-    const { data } = await login(credentials);
-    return data;
-};
-
-const getSelf = async () => {
-    const { data } = await whoami();
-    return data;
-};
 
 export const LoginForm = () => {
-    const { setUser } = useAuthStore();
-
-    const { refetch } = useQuery({
-        queryKey: ["whoami"],
-        queryFn: getSelf,
-        enabled: false
-    });
-
-    const { mutate, isPending, isError, error } = useMutation({
-        mutationKey: ["login"],
-        mutationFn: loginUser,
-        onSuccess: async () => {
-            const userDataPromise = await refetch();
-            setUser(userDataPromise.data);
-        }
-    });
+    const { loginMutation } = useLogin();
+    const { mutate, isPending, isError, error } = loginMutation;
 
     return (
         <Form
@@ -48,7 +21,7 @@ export const LoginForm = () => {
                 <Alert
                     style={errorStyle}
                     type="error"
-                    message={error?.message}
+                    message={error.message}
                 />
             )}
             <FormItem
