@@ -7,11 +7,11 @@ const getSelf = async () => {
     return data;
 };
 
-export const useGetUser = () => {
+export const useGetUser = (isEnabled = false) => {
     const getSelfUser = useQuery({
         queryKey: ["whoami"],
         queryFn: getSelf,
-        enabled: false
+        enabled: isEnabled
     });
 
     return {
