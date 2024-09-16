@@ -1,3 +1,4 @@
+import { Layout, Spin } from "antd";
 import { useEffect } from "react";
 import { Outlet } from "react-router-dom";
 
@@ -17,7 +18,18 @@ export const Root = () => {
     }, [data, setUser]);
 
     if (isLoading) {
-        return <div>...Loading</div>;
+        return (
+            <Layout>
+                <Spin
+                    size="large"
+                    style={{
+                        placeItems: "center",
+                        height: "100vh",
+                        display: "grid"
+                    }}
+                ></Spin>
+            </Layout>
+        );
     }
     return <Outlet />;
 };

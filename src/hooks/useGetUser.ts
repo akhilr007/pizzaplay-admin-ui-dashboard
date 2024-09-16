@@ -11,7 +11,8 @@ export const useGetUser = (isEnabled = false) => {
     const getSelfUser = useQuery({
         queryKey: ["whoami"],
         queryFn: getSelf,
-        enabled: isEnabled
+        enabled: isEnabled,
+        retry: 2
     });
 
     return {
