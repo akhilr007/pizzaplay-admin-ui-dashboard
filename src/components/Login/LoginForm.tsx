@@ -4,6 +4,7 @@ import { Alert, Button, Checkbox, Flex, Form, Input } from "antd";
 import FormItem from "antd/es/form/FormItem";
 
 import { login, whoami } from "../../http/api";
+import { useAuthStore } from "../../store";
 import { loginFormButton } from "./styles";
 import { errorStyle } from "./styles";
 import { Credentials } from "./types";
@@ -19,7 +20,9 @@ const getSelf = async () => {
 };
 
 export const LoginForm = () => {
-    const { data: userData, refetch } = useQuery({
+    const { setUser } = useAuthStore();
+
+    const { refetch } = useQuery({
         queryKey: ["whoami"],
         queryFn: getSelf,
         enabled: false
@@ -29,8 +32,8 @@ export const LoginForm = () => {
         mutationKey: ["login"],
         mutationFn: loginUser,
         onSuccess: async () => {
-            refetch();
-            console.log("userdata: ", userData);
+            const userDataPromise = await refetch();
+            setUser(userDataPromise.data);
         }
     });
 
