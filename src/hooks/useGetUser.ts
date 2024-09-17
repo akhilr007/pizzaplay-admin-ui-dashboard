@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { AxiosError, HttpStatusCode } from "axios";
 
 import { whoami } from "../http/api";
 
@@ -12,7 +13,16 @@ export const useGetUser = (isEnabled = false) => {
         queryKey: ["whoami"],
         queryFn: getSelf,
         enabled: isEnabled,
-        retry: 2
+        retry: (failureCount: number, error) => {
+            if (
+                error instanceof AxiosError &&
+                error.response?.status === HttpStatusCode.Unauthorized
+            ) {
+                return false;
+            }
+
+            return failureCount < 2;
+        }
     });
 
     return {
