@@ -1,10 +1,11 @@
 import "./styles.css";
 
 import Icon from "@ant-design/icons";
-import { Layout, Menu, theme } from "antd";
+import { Layout, Menu } from "antd";
 import { useState } from "react";
 import { NavLink, Outlet } from "react-router-dom";
 
+import { HeaderComponent } from "../Header/Header";
 import { BasketIcon } from "../icons/BasketIcon";
 import { FoodIcon } from "../icons/FoodIcon";
 import { GiftIcon } from "../icons/GiftIcon";
@@ -12,7 +13,8 @@ import { Home } from "../icons/Home";
 import { Logo } from "../icons/Logo";
 import { UserIcon } from "../icons/UserIcon";
 
-const { Header, Content, Footer, Sider } = Layout;
+const { Content, Footer, Sider } = Layout;
+
 const items = [
     {
         key: "/",
@@ -43,9 +45,7 @@ const items = [
 
 export const Sidebar = () => {
     const [collapsed, setCollapsed] = useState(false);
-    const {
-        token: { colorBgContainer }
-    } = theme.useToken();
+    const [text] = useState("484848");
 
     return (
         <Layout style={{ minHeight: "100vh" }}>
@@ -56,7 +56,7 @@ export const Sidebar = () => {
                 onCollapse={(value) => setCollapsed(value)}
             >
                 <div className="logo">
-                    <Logo />
+                    {collapsed ? <Logo /> : <Logo text={text} />}
                 </div>
                 <Menu
                     theme="light"
@@ -66,7 +66,7 @@ export const Sidebar = () => {
                 />
             </Sider>
             <Layout>
-                <Header style={{ padding: 0, background: colorBgContainer }} />
+                <HeaderComponent />
                 <Content style={{ margin: "0 16px" }}>
                     <Outlet />
                 </Content>

@@ -10,7 +10,7 @@ export const LoginPage = () => {
             <Layout style={layoutStyle}>
                 <Space direction="vertical" align="center" size="large">
                     <Layout.Content style={contentStyle}>
-                        <Logo />
+                        <Logo text="484848" />
                     </Layout.Content>
                     <LoginCard />
                 </Space>
