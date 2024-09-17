@@ -7,7 +7,7 @@ import { useAuthStore } from "../store";
 
 export const Root = () => {
     const { setUser } = useAuthStore();
-    const { data, isLoading } = useGetUser().getSelfUser;
+    const { data, isLoading } = useGetUser(true).getSelfUser;
 
     useEffect(() => {
         if (data) {
