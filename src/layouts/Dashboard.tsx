@@ -1,5 +1,6 @@
 import { Navigate, Outlet } from "react-router-dom";
 
+import { Sidebar } from "../components/Sidebar/Sidebar";
 import { useAuthStore } from "../store";
 
 export const Dashboard = () => {
@@ -10,7 +11,7 @@ export const Dashboard = () => {
 
     return (
         <div>
-            <h1> Dashboard </h1>
+            <Sidebar />
             <Outlet />
         </div>
     );
