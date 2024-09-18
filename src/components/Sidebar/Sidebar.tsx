@@ -67,7 +67,7 @@ export const Sidebar = () => {
             </Sider>
             <Layout>
                 <HeaderComponent />
-                <Content style={{ margin: "0 16px" }}>
+                <Content style={{ margin: "24px" }}>
                     <Outlet />
                 </Content>
                 <Footer style={{ textAlign: "center" }}>
