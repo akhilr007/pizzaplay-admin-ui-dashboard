@@ -23,10 +23,12 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
+        console.log("originalRequest", originalRequest);
 
         if (
             error.response.status === HttpStatusCode.Unauthorized &&
-            !originalRequest._isRetry
+            !originalRequest._isRetry &&
+            originalRequest.url !== "/auth/login"
         ) {
             try {
                 originalRequest._isRetry = true;
