@@ -5,13 +5,15 @@ import { useAuthStore } from "../store";
 
 export const Dashboard = () => {
     const { user } = useAuthStore();
+
     if (user === null) {
         return <Navigate to="/auth/login" replace={true} />;
     }
 
+    const { role } = user;
     return (
         <div>
-            <Sidebar />
+            <Sidebar role={role} />
         </div>
     );
 };

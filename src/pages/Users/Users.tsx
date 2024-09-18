@@ -4,6 +4,7 @@ import { Breadcrumb, Space, Table } from "antd";
 import { Link } from "react-router-dom";
 
 import { users } from "../../http/api";
+import { useAuthStore } from "../../store";
 import { User } from "./types";
 
 const getUsers = async () => {
@@ -13,6 +14,8 @@ const getUsers = async () => {
 };
 
 export const Users = () => {
+    const { user } = useAuthStore();
+
     const {
         data: users,
         isLoading,
@@ -20,7 +23,8 @@ export const Users = () => {
         error
     } = useQuery({
         queryKey: ["users"],
-        queryFn: getUsers
+        queryFn: getUsers,
+        enabled: user?.role === "admin"
     });
 
     const columns = [

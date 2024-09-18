@@ -15,35 +15,51 @@ import { UserIcon } from "../icons/UserIcon";
 
 const { Content, Footer, Sider } = Layout;
 
-const items = [
-    {
-        key: "/",
-        icon: <Icon component={Home} />,
-        label: <NavLink to="/">Home</NavLink>
-    },
-    {
-        key: "/users",
-        icon: <Icon component={UserIcon} />,
-        label: <NavLink to="/users">Users</NavLink>
-    },
-    {
-        key: "/restaurants",
-        icon: <Icon component={FoodIcon} />,
-        label: <NavLink to="/restaurants">Restaurants</NavLink>
-    },
-    {
-        key: "/products",
-        icon: <Icon component={BasketIcon} />,
-        label: <NavLink to="/products">Products</NavLink>
-    },
-    {
-        key: "/promos",
-        icon: <Icon component={GiftIcon} />,
-        label: <NavLink to="/promos">Promos</NavLink>
-    }
-];
+interface SidebarProps {
+    role: string;
+}
 
-export const Sidebar = () => {
+const getMenuItems = (role: string) => {
+    const baseItems = [
+        {
+            key: "/",
+            icon: <Icon component={Home} />,
+            label: <NavLink to="/">Home</NavLink>
+        },
+        {
+            key: "/restaurants",
+            icon: <Icon component={FoodIcon} />,
+            label: <NavLink to="/restaurants">Restaurants</NavLink>
+        },
+        {
+            key: "/products",
+            icon: <Icon component={BasketIcon} />,
+            label: <NavLink to="/products">Products</NavLink>
+        },
+        {
+            key: "/promos",
+            icon: <Icon component={GiftIcon} />,
+            label: <NavLink to="/promos">Promos</NavLink>
+        }
+    ];
+
+    if (role === "admin") {
+        const menuItems = [...baseItems];
+
+        menuItems.splice(1, 0, {
+            key: "/users",
+            icon: <Icon component={UserIcon} />,
+            label: <NavLink to="/users">Users</NavLink>
+        });
+
+        return menuItems;
+    }
+
+    return baseItems;
+};
+
+export const Sidebar = (userRole: SidebarProps) => {
+    const items = getMenuItems(userRole.role);
     const [collapsed, setCollapsed] = useState(false);
     const [text] = useState("484848");
 
