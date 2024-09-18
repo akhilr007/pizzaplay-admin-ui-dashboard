@@ -3,9 +3,11 @@ import { Avatar, Badge, Dropdown, Flex, Space, Tag, theme } from "antd";
 import { Header } from "antd/es/layout/layout";
 
 import { useLogout } from "../../hooks/useLogout";
+import { useAuthStore } from "../../store";
 import { avatarStyle, headerStyle, tagStyle } from "./styles";
 
 export const HeaderComponent = () => {
+    const { user } = useAuthStore();
     const { token } = theme.useToken();
     const {
         logoutMutation: { mutate }
@@ -15,7 +17,9 @@ export const HeaderComponent = () => {
         <Header style={{ ...headerStyle, background: token.colorBgContainer }}>
             <Flex align="center" justify="space-between">
                 <Tag color="orange" style={tagStyle}>
-                    Global
+                    {user?.role === "admin"
+                        ? "You are an admin"
+                        : user?.tenant?.name}
                 </Tag>
                 <Space size={16}>
                     <Badge dot={true}>
