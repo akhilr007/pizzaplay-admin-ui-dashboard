@@ -10,3 +10,5 @@ export const whoami = () => api.get("/auth/whoami");
 export const logout = () => api.post("/auth/logout");
 
 export const users = () => api.get("/users");
+
+export const tenants = () => api.get("/tenants");
