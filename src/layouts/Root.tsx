@@ -11,8 +11,6 @@ export const Root = () => {
 
     useEffect(() => {
         if (data) {
-            console.log("user: ", data);
-
             setUser(data);
         }
     }, [data, setUser]);

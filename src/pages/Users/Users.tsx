@@ -87,7 +87,7 @@ export const Users = () => {
                     console.log(filterName, filterValue);
                 }}
             />
-            <Table columns={columns} dataSource={users} />
+            <Table columns={columns} dataSource={users} rowKey={"id"} />
         </Space>
     );
 };
