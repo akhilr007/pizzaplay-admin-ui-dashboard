@@ -1,12 +1,13 @@
 import { RightOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { users } from "../../http/api";
 import { useAuthStore } from "../../store";
+import { UserForm } from "./Forms/UserForm";
 import { User } from "./types";
 import { UsersFilter } from "./UsersFilter";
 
@@ -17,6 +18,7 @@ const getUsers = async () => {
 };
 
 export const Users = () => {
+    const { colorBgLayout } = theme.useToken().token;
     const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const {
@@ -104,6 +106,7 @@ export const Users = () => {
                 title="Create New User"
                 destroyOnClose
                 width={720}
+                styles={{ body: { background: colorBgLayout } }}
                 open={drawerOpen}
                 onClose={() => setDrawerOpen(false)}
                 extra={
@@ -113,11 +116,9 @@ export const Users = () => {
                     </Space>
                 }
             >
-                <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Cumque aperiam id tempora a sit aliquid repudiandae
-                    voluptatibus provident earum accusamus?
-                </p>
+                <Form.Item layout="vertical">
+                    <UserForm />
+                </Form.Item>
             </Drawer>
         </Space>
     );
