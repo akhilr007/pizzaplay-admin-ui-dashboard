@@ -1,6 +1,8 @@
 import { RightOutlined } from "@ant-design/icons";
+import { PlusOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Breadcrumb, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { users } from "../../http/api";
@@ -16,7 +18,7 @@ const getUsers = async () => {
 
 export const Users = () => {
     const { user } = useAuthStore();
-
+    const [drawerOpen, setDrawerOpen] = useState(false);
     const {
         data: users,
         isLoading,
@@ -86,8 +88,37 @@ export const Users = () => {
                 onFilterChange={(filterName: string, filterValue: string) => {
                     console.log(filterName, filterValue);
                 }}
-            />
+            >
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => setDrawerOpen(true)}
+                >
+                    Add User
+                </Button>
+            </UsersFilter>
+
             <Table columns={columns} dataSource={users} rowKey={"id"} />
+
+            <Drawer
+                title="Create New User"
+                destroyOnClose
+                width={720}
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                extra={
+                    <Space>
+                        <Button>Cancel</Button>
+                        <Button type="primary">Submit</Button>
+                    </Space>
+                }
+            >
+                <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Cumque aperiam id tempora a sit aliquid repudiandae
+                    voluptatibus provident earum accusamus?
+                </p>
+            </Drawer>
         </Space>
     );
 };
