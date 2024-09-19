@@ -23,7 +23,6 @@ api.interceptors.response.use(
     (response) => response,
     async (error) => {
         const originalRequest = error.config;
-        console.log("originalRequest", originalRequest);
 
         if (
             error.response.status === HttpStatusCode.Unauthorized &&

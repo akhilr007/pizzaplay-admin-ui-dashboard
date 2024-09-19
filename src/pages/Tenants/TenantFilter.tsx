@@ -1,13 +1,16 @@
-import { PlusOutlined } from "@ant-design/icons";
-import { Button, Card, Col, Row } from "antd";
+import { Card, Col, Row } from "antd";
 
 import { SearchInput } from "../../components/SearchInput/SearchInput";
 
 interface TenantFilterProps {
+    children: React.ReactNode;
     onFilterChange: (filterName: string, filterValue: string) => void;
 }
 
-export const TenantFilter = ({ onFilterChange }: TenantFilterProps) => {
+export const TenantFilter = ({
+    onFilterChange,
+    children
+}: TenantFilterProps) => {
     return (
         <Card>
             <Row justify="space-between">
@@ -18,9 +21,7 @@ export const TenantFilter = ({ onFilterChange }: TenantFilterProps) => {
                     span={8}
                     style={{ display: "flex", justifyContent: "end" }}
                 >
-                    <Button type="primary" icon={<PlusOutlined />}>
-                        Add Tenant
-                    </Button>
+                    {children}
                 </Col>
             </Row>
         </Card>

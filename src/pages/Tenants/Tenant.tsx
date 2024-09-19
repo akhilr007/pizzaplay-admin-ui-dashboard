@@ -1,6 +1,7 @@
-import { RightOutlined } from "@ant-design/icons";
+import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Breadcrumb, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { tenants } from "../../http/api";
@@ -13,6 +14,8 @@ const getTenants = async () => {
 };
 
 export const Tenant = () => {
+    const [drawerOpen, setDrawerOpen] = useState(false);
+
     const {
         data: tenants,
         isLoading,
@@ -59,9 +62,37 @@ export const Tenant = () => {
                     (filterName: string, filterValue: string) => {
                         console.log(filterName, filterValue);
                     }}
-            />
+            >
+                <Button
+                    type="primary"
+                    icon={<PlusOutlined />}
+                    onClick={() => setDrawerOpen(true)}
+                >
+                    Add Tenant
+                </Button>
+            </TenantFilter>
 
             <Table columns={columns} dataSource={tenants} rowKey={"id"} />
+
+            <Drawer
+                title="Create New Tenant"
+                destroyOnClose
+                width={720}
+                open={drawerOpen}
+                onClose={() => setDrawerOpen(false)}
+                extra={
+                    <Space>
+                        <Button>Cancel</Button>
+                        <Button type="primary">Submit</Button>
+                    </Space>
+                }
+            >
+                <p>
+                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
+                    Cumque aperiam id tempora a sit aliquid repudiandae
+                    voluptatibus provident earum accusamus?
+                </p>
+            </Drawer>
         </Space>
     );
 };
