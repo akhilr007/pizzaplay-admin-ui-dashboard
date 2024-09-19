@@ -6,6 +6,7 @@ import { Link } from "react-router-dom";
 import { users } from "../../http/api";
 import { useAuthStore } from "../../store";
 import { User } from "./types";
+import { UsersFilter } from "./UsersFilter";
 
 const getUsers = async () => {
     const { data } = await users();
@@ -80,6 +81,12 @@ export const Users = () => {
             />
             {isLoading && <div>Loading...</div>}
             {isError && <div>{error.message}</div>}
+
+            <UsersFilter
+                onFilterChange={(filterName: string, filterValue: string) => {
+                    console.log(filterName, filterValue);
+                }}
+            />
             <Table columns={columns} dataSource={users} />
         </Space>
     );
