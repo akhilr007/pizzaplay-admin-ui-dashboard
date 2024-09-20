@@ -116,9 +116,9 @@ export const Users = () => {
                     </Space>
                 }
             >
-                <Form.Item layout="vertical">
+                <Form layout="vertical">
                     <UserForm />
-                </Form.Item>
+                </Form>
             </Drawer>
         </Space>
     );

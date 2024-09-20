@@ -30,19 +30,48 @@ export const UserForm = () => {
                         <Row gutter={24}>
                             <Col span={12}>
                                 <Form.Item
-                                    label="First Name: *"
+                                    label="First Name:"
                                     name="firstName"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "First Name cannot be empty"
+                                        }
+                                    ]}
                                 >
                                     <Input allowClear />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
-                                <Form.Item label="Last Name: *" name="lastName">
+                                <Form.Item
+                                    label="Last Name:"
+                                    name="lastName"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Last Name cannot be empty"
+                                        }
+                                    ]}
+                                >
                                     <Input allowClear />
                                 </Form.Item>
                             </Col>
                             <Col span={12}>
-                                <Form.Item label="Email: *" name="email">
+                                <Form.Item
+                                    label="Email:"
+                                    name="email"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Email cannot be empty"
+                                        },
+                                        {
+                                            type: "email",
+                                            message: "Email is not valid"
+                                        }
+                                    ]}
+                                >
                                     <Input allowClear />
                                 </Form.Item>
                             </Col>
@@ -51,7 +80,16 @@ export const UserForm = () => {
                     <Card title="Security Info">
                         <Row gutter={24}>
                             <Col span={12}>
-                                <Form.Item label="Password: *" name="password">
+                                <Form.Item
+                                    label="Password:"
+                                    name="password"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Password cannot be empty"
+                                        }
+                                    ]}
+                                >
                                     <Input type="password" allowClear />
                                 </Form.Item>
                             </Col>
@@ -60,7 +98,16 @@ export const UserForm = () => {
                     <Card title="Roles">
                         <Row gutter={24}>
                             <Col span={12}>
-                                <Form.Item label="Role: *" name="role">
+                                <Form.Item
+                                    label="Role:"
+                                    name="role"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message: "Role cannot be empty"
+                                        }
+                                    ]}
+                                >
                                     <Select style={{ width: "100%" }}>
                                         {roleOptions.map((option) => (
                                             <Select.Option
@@ -75,8 +122,15 @@ export const UserForm = () => {
                             </Col>
                             <Col span={12}>
                                 <Form.Item
-                                    label="Restaurant: *"
+                                    label="Restaurant:"
                                     name="tenantId"
+                                    rules={[
+                                        {
+                                            required: true,
+                                            message:
+                                                "Restaurant cannot be empty"
+                                        }
+                                    ]}
                                 >
                                     <Select style={{ width: "100%" }}>
                                         {tenants?.map((tenant: Tenant) => (
