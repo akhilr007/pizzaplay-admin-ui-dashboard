@@ -1,6 +1,17 @@
-import { RightOutlined } from "@ant-design/icons";
+import { LoadingOutlined, RightOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
-import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
+import {
+    Breadcrumb,
+    Button,
+    Drawer,
+    Flex,
+    Form,
+    Space,
+    Spin,
+    Table,
+    theme,
+    Typography
+} from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
@@ -25,7 +36,7 @@ export const Users = () => {
 
     const {
         data: users,
-        isLoading,
+        isFetching,
         isError,
         error
     } = useGetUsers(queryParams, user?.role === "admin");
@@ -85,15 +96,27 @@ export const Users = () => {
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
-            <Breadcrumb
-                separator={<RightOutlined />}
-                items={[
-                    { title: <Link to="/">Dashboard</Link> },
-                    { title: "Users" }
-                ]}
-            />
-            {isLoading && <div>Loading...</div>}
-            {isError && <div>{error.message}</div>}
+            <Flex justify="space-between">
+                <Breadcrumb
+                    separator={<RightOutlined />}
+                    items={[
+                        { title: <Link to="/">Dashboard</Link> },
+                        { title: "Users" }
+                    ]}
+                />
+                {isFetching && (
+                    <Spin
+                        indicator={
+                            <LoadingOutlined style={{ fontSize: 24 }} spin />
+                        }
+                    />
+                )}
+                {isError && (
+                    <Typography.Text type="danger">
+                        {error.message}
+                    </Typography.Text>
+                )}
+            </Flex>
 
             <UsersFilter
                 onFilterChange={(filterName: string, filterValue: string) => {
@@ -113,6 +136,7 @@ export const Users = () => {
                 columns={columns}
                 dataSource={users?.data}
                 rowKey={"id"}
+                loading={isFetching}
                 pagination={{
                     total: users?.total,
                     pageSize: PER_PAGE,

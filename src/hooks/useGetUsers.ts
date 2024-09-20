@@ -1,4 +1,8 @@
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
+import {
+    keepPreviousData,
+    QueryFunctionContext,
+    useQuery
+} from "@tanstack/react-query";
 
 import { users } from "../http/api";
 
@@ -25,6 +29,7 @@ export const useGetUsers = (queryParams: QueryParams, isEnabled: boolean) => {
     return useQuery({
         queryKey: ["users", queryParams],
         queryFn: getUsers,
-        enabled: isEnabled
+        enabled: isEnabled,
+        placeholderData: keepPreviousData
     });
 };
