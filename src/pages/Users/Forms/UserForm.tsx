@@ -18,7 +18,7 @@ export const UserForm = () => {
     ];
 
     const { data: tenants } = useQuery({
-        queryKey: ["users"],
+        queryKey: ["tenants"],
         queryFn: getTenants
     });
 

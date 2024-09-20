@@ -22,7 +22,7 @@ export const Tenant = () => {
         isError,
         error
     } = useQuery({
-        queryKey: ["users"],
+        queryKey: ["tenants"],
         queryFn: getTenants
     });
 
