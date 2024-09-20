@@ -1,10 +1,11 @@
 import { RightOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
+import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { PER_PAGE } from "../../constants";
 import { useCreateUser } from "../../hooks/useCreateUser";
 import { users } from "../../http/api";
 import { useAuthStore } from "../../store";
@@ -12,10 +13,23 @@ import { UserForm } from "./Forms/UserForm";
 import { User } from "./types";
 import { UsersFilter } from "./UsersFilter";
 
-const getUsers = async () => {
-    const { data } = await users();
-    const { data: usersData } = data;
-    return usersData;
+interface QueryParams {
+    currentPage: number;
+    perPage: number;
+}
+
+const getUsers = async ({
+    queryKey
+}: QueryFunctionContext<[string, QueryParams]>) => {
+    const [, queryParams] = queryKey;
+    const { currentPage, perPage } = queryParams;
+    const queryString = new URLSearchParams({
+        currentPage: currentPage.toString(),
+        perPage: perPage.toString()
+    }).toString();
+
+    const { data } = await users(queryString);
+    return data;
 };
 
 export const Users = () => {
@@ -23,13 +37,19 @@ export const Users = () => {
     const { colorBgLayout } = theme.useToken().token;
     const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
+
+    const [queryParams, setQueryParams] = useState({
+        perPage: PER_PAGE,
+        currentPage: 1
+    });
+
     const {
         data: users,
         isLoading,
         isError,
         error
     } = useQuery({
-        queryKey: ["users"],
+        queryKey: ["users", queryParams],
         queryFn: getUsers,
         enabled: user?.role === "admin"
     });
@@ -113,7 +133,24 @@ export const Users = () => {
                 </Button>
             </UsersFilter>
 
-            <Table columns={columns} dataSource={users} rowKey={"id"} />
+            <Table
+                columns={columns}
+                dataSource={users?.data}
+                rowKey={"id"}
+                pagination={{
+                    total: users?.total,
+                    pageSize: PER_PAGE,
+                    current: users?.currentPage,
+                    onChange: (page: number) => {
+                        setQueryParams((prev) => {
+                            return {
+                                ...prev,
+                                currentPage: page
+                            };
+                        });
+                    }
+                }}
+            />
 
             <Drawer
                 title="Create New User"
