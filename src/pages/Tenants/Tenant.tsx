@@ -1,10 +1,12 @@
 import { PlusOutlined, RightOutlined } from "@ant-design/icons";
 import { useQuery } from "@tanstack/react-query";
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useCreateTenant } from "../../hooks/useCreateTenant";
 import { tenants } from "../../http/api";
+import { TenantForm } from "./form/TenantForm";
 import { TenantFilter } from "./TenantFilter";
 
 const getTenants = async () => {
@@ -14,6 +16,8 @@ const getTenants = async () => {
 };
 
 export const Tenant = () => {
+    const [form] = Form.useForm();
+    const { colorBgLayout } = theme.useToken().token;
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const {
@@ -43,6 +47,17 @@ export const Tenant = () => {
             key: "address"
         }
     ];
+
+    const {
+        createTenantMutation: { mutate: createTenantMutate }
+    } = useCreateTenant();
+
+    const handleFormSubmit = async () => {
+        await form.validateFields();
+        createTenantMutate(form.getFieldsValue());
+        form.resetFields();
+        setDrawerOpen(false);
+    };
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
@@ -78,20 +93,31 @@ export const Tenant = () => {
                 title="Create New Tenant"
                 destroyOnClose
                 width={720}
+                styles={{ body: { background: colorBgLayout } }}
                 open={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
+                onClose={() => {
+                    form.resetFields();
+                    setDrawerOpen(false);
+                }}
                 extra={
                     <Space>
-                        <Button>Cancel</Button>
-                        <Button type="primary">Submit</Button>
+                        <Button
+                            onClick={() => {
+                                form.resetFields();
+                                setDrawerOpen(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="primary" onClick={handleFormSubmit}>
+                            Submit
+                        </Button>
                     </Space>
                 }
             >
-                <p>
-                    Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                    Cumque aperiam id tempora a sit aliquid repudiandae
-                    voluptatibus provident earum accusamus?
-                </p>
+                <Form form={form} layout="vertical">
+                    <TenantForm />
+                </Form>
             </Drawer>
         </Space>
     );

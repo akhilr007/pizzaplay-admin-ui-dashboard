@@ -1,5 +1,5 @@
 import { Credentials } from "../components/Login/types";
-import { CreateUser } from "../pages/Users/types";
+import { CreateUser, Tenant } from "../pages/Users/types";
 import { api } from "./client";
 
 // Auth service
@@ -15,3 +15,5 @@ export const users = () => api.get("/users");
 export const tenants = () => api.get("/tenants");
 
 export const createUser = (user: CreateUser) => api.post("/users", user);
+
+export const createTenant = (tenant: Tenant) => api.post("/tenants", tenant);
