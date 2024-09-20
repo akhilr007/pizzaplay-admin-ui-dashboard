@@ -12,3 +12,13 @@ export type User = {
     role: string;
     tenant: Tenant;
 };
+
+export type CreateUser = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    password: string;
+    role: string;
+    tenant: number;
+};

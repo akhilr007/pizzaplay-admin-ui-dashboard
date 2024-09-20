@@ -136,7 +136,7 @@ export const UserForm = () => {
                                         {tenants?.map((tenant: Tenant) => (
                                             <Select.Option
                                                 key={tenant.id}
-                                                value={tenant.name}
+                                                value={tenant.id}
                                             >
                                                 {tenant.name}
                                             </Select.Option>

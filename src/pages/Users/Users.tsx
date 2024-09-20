@@ -5,6 +5,7 @@ import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useCreateUser } from "../../hooks/useCreateUser";
 import { users } from "../../http/api";
 import { useAuthStore } from "../../store";
 import { UserForm } from "./Forms/UserForm";
@@ -18,6 +19,7 @@ const getUsers = async () => {
 };
 
 export const Users = () => {
+    const [form] = Form.useForm();
     const { colorBgLayout } = theme.useToken().token;
     const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -74,6 +76,17 @@ export const Users = () => {
         }
     ];
 
+    const {
+        createUserMutation: { mutate: createUserMutate }
+    } = useCreateUser();
+
+    const onHandleFormSubmit = async () => {
+        await form.validateFields();
+        createUserMutate(form.getFieldsValue());
+        form.resetFields();
+        setDrawerOpen(false);
+    };
+
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
             <Breadcrumb
@@ -108,15 +121,27 @@ export const Users = () => {
                 width={720}
                 styles={{ body: { background: colorBgLayout } }}
                 open={drawerOpen}
-                onClose={() => setDrawerOpen(false)}
+                onClose={() => {
+                    form.resetFields();
+                    setDrawerOpen(false);
+                }}
                 extra={
                     <Space>
-                        <Button>Cancel</Button>
-                        <Button type="primary">Submit</Button>
+                        <Button
+                            onClick={() => {
+                                form.resetFields();
+                                setDrawerOpen(false);
+                            }}
+                        >
+                            Cancel
+                        </Button>
+                        <Button type="primary" onClick={onHandleFormSubmit}>
+                            Submit
+                        </Button>
                     </Space>
                 }
             >
-                <Form layout="vertical">
+                <Form form={form} layout="vertical">
                     <UserForm />
                 </Form>
             </Drawer>
