@@ -1,36 +1,16 @@
 import { RightOutlined } from "@ant-design/icons";
 import { PlusOutlined } from "@ant-design/icons";
-import { QueryFunctionContext, useQuery } from "@tanstack/react-query";
 import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PER_PAGE } from "../../constants";
 import { useCreateUser } from "../../hooks/useCreateUser";
-import { users } from "../../http/api";
+import { useGetUsers } from "../../hooks/useGetUsers";
 import { useAuthStore } from "../../store";
 import { UserForm } from "./Forms/UserForm";
 import { User } from "./types";
 import { UsersFilter } from "./UsersFilter";
-
-interface QueryParams {
-    currentPage: number;
-    perPage: number;
-}
-
-const getUsers = async ({
-    queryKey
-}: QueryFunctionContext<[string, QueryParams]>) => {
-    const [, queryParams] = queryKey;
-    const { currentPage, perPage } = queryParams;
-    const queryString = new URLSearchParams({
-        currentPage: currentPage.toString(),
-        perPage: perPage.toString()
-    }).toString();
-
-    const { data } = await users(queryString);
-    return data;
-};
 
 export const Users = () => {
     const [form] = Form.useForm();
@@ -48,11 +28,7 @@ export const Users = () => {
         isLoading,
         isError,
         error
-    } = useQuery({
-        queryKey: ["users", queryParams],
-        queryFn: getUsers,
-        enabled: user?.role === "admin"
-    });
+    } = useGetUsers(queryParams, user?.role === "admin");
 
     const columns = [
         {
