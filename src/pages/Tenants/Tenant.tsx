@@ -1,10 +1,9 @@
-import { LoadingOutlined, RightOutlined } from "@ant-design/icons";
-import { Breadcrumb, Flex, Space, Spin, theme, Typography } from "antd";
+import { Space, theme } from "antd";
 import { debounce } from "lodash";
 import { useState } from "react";
 import React from "react";
-import { Link } from "react-router-dom";
 
+import { PageContentHeader } from "../../components/PageContentHeader/PageContentHeader";
 import { PER_PAGE } from "../../constants";
 import { useCreateTenant } from "../../hooks/useCreateTenant";
 import { useGetTenants } from "../../hooks/useGetTenants";
@@ -59,27 +58,12 @@ export const Tenant = () => {
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
-            <Flex justify="space-between">
-                <Breadcrumb
-                    separator={<RightOutlined />}
-                    items={[
-                        { title: <Link to="/">Dashboard</Link> },
-                        { title: "Tenants" }
-                    ]}
-                />
-                {isFetching && (
-                    <Spin
-                        indicator={
-                            <LoadingOutlined style={{ fontSize: 24 }} spin />
-                        }
-                    />
-                )}
-                {isError && (
-                    <Typography.Text type="danger">
-                        {error.message}
-                    </Typography.Text>
-                )}
-            </Flex>
+            <PageContentHeader
+                title="Tenants"
+                isFetching={isFetching}
+                isError={isError}
+                error={error}
+            />
 
             <TenantsFilterForm
                 onFilterChange={onFilterChange}
