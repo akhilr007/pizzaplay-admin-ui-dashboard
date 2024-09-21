@@ -48,7 +48,7 @@ export const UsersTable: React.FC<Props> = ({
             key: "role"
         },
         {
-            title: "Tenant",
+            title: "Restaurant",
             dataIndex: "name",
             key: "tenant",
             render: (_text: string, record: User) => {

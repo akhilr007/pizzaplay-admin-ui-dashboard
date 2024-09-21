@@ -69,7 +69,7 @@ export const Users: React.FC = () => {
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
             <PageContentHeader
-                title="Tenants"
+                title="Restaurants"
                 isFetching={isFetching}
                 isError={isError}
                 error={error}
