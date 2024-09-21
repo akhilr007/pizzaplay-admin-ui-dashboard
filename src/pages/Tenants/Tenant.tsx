@@ -35,7 +35,11 @@ export const Tenant = () => {
     const debouncedQUpdate = React.useMemo(
         () =>
             debounce((value: string) => {
-                setQueryParams((prev) => ({ ...prev, q: value }));
+                setQueryParams((prev) => ({
+                    ...prev,
+                    q: value,
+                    currentPage: 1
+                }));
             }, 500),
         []
     );
@@ -48,7 +52,11 @@ export const Tenant = () => {
         if ("q" in changedFilterFields) {
             debouncedQUpdate(changedFilterFields.q ?? "");
         } else {
-            setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
+            setQueryParams((prev) => ({
+                ...prev,
+                ...changedFilterFields,
+                currentPage: 1
+            }));
         }
     };
 
