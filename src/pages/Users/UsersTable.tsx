@@ -71,7 +71,10 @@ export const UsersTable: React.FC<Props> = ({
                 total: totalUsers,
                 pageSize: perPage,
                 current: currentPage,
-                onChange: onPageChange
+                onChange: onPageChange,
+                showTotal: (total: number, range: number[]) => {
+                    return `Showing ${range[0]}-${range[1]} of ${total} items`;
+                }
             }}
         />
     );
