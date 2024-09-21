@@ -3,7 +3,7 @@ import "./styles.css";
 import Icon from "@ant-design/icons";
 import { Layout, Menu } from "antd";
 import { useState } from "react";
-import { NavLink, Outlet } from "react-router-dom";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 
 import { HeaderComponent } from "../Header/Header";
 import { BasketIcon } from "../icons/BasketIcon";
@@ -59,6 +59,7 @@ const getMenuItems = (role: string) => {
 };
 
 export const Sidebar = (userRole: SidebarProps) => {
+    const { pathname } = useLocation();
     const items = getMenuItems(userRole.role);
     const [collapsed, setCollapsed] = useState(false);
     const [text] = useState("484848");
@@ -76,7 +77,7 @@ export const Sidebar = (userRole: SidebarProps) => {
                 </div>
                 <Menu
                     theme="light"
-                    defaultSelectedKeys={[items[0].key]}
+                    defaultSelectedKeys={[pathname]}
                     mode="inline"
                     items={items}
                 />
