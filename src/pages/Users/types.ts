@@ -22,3 +22,18 @@ export type CreateUser = {
     role: string;
     tenant: number;
 };
+
+export type FieldData = {
+    name: string[];
+    value?: string;
+};
+
+export interface FilterProps {
+    name: string;
+}
+
+export interface SelectFilterProps {
+    name: string;
+    placeholder: string;
+    options: string[];
+}

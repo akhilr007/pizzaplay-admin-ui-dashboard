@@ -9,18 +9,19 @@ import { users } from "../http/api";
 interface QueryParams {
     currentPage: number;
     perPage: number;
+    q: string;
+    role: string;
 }
 
 const getUsers = async ({
     queryKey
 }: QueryFunctionContext<[string, QueryParams]>) => {
     const [, queryParams] = queryKey;
-    const { currentPage, perPage } = queryParams;
-    const queryString = new URLSearchParams({
-        currentPage: currentPage.toString(),
-        perPage: perPage.toString()
-    }).toString();
 
+    const filteredParams = Object.fromEntries(
+        Object.entries(queryParams).filter((item) => !!item[1])
+    );
+    const queryString = new URLSearchParams(filteredParams).toString();
     const { data } = await users(queryString);
     return data;
 };

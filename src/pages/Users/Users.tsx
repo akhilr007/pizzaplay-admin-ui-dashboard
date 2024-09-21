@@ -20,18 +20,21 @@ import { useCreateUser } from "../../hooks/useCreateUser";
 import { useGetUsers } from "../../hooks/useGetUsers";
 import { useAuthStore } from "../../store";
 import { UserForm } from "./Forms/UserForm";
-import { User } from "./types";
+import { FieldData, User } from "./types";
 import { UsersFilter } from "./UsersFilter";
 
 export const Users = () => {
     const [form] = Form.useForm();
+    const [filterForm] = Form.useForm();
     const { colorBgLayout } = theme.useToken().token;
     const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
 
     const [queryParams, setQueryParams] = useState({
         perPage: PER_PAGE,
-        currentPage: 1
+        currentPage: 1,
+        q: "",
+        role: ""
     });
 
     const {
@@ -94,6 +97,18 @@ export const Users = () => {
         setDrawerOpen(false);
     };
 
+    const onFilterChange = (changedFields: FieldData[]) => {
+        const changedFilterFields = changedFields
+            .map((field) => ({
+                [field.name[0]]: field.value
+            }))
+            .reduce((acc, field) => ({ ...acc, ...field }), {});
+
+        setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
+        console.log(changedFilterFields);
+        console.log(queryParams);
+    };
+
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
             <Flex justify="space-between">
@@ -118,19 +133,17 @@ export const Users = () => {
                 )}
             </Flex>
 
-            <UsersFilter
-                onFilterChange={(filterName: string, filterValue: string) => {
-                    console.log(filterName, filterValue);
-                }}
-            >
-                <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => setDrawerOpen(true)}
-                >
-                    Add User
-                </Button>
-            </UsersFilter>
+            <Form form={filterForm} onFieldsChange={onFilterChange}>
+                <UsersFilter>
+                    <Button
+                        type="primary"
+                        icon={<PlusOutlined />}
+                        onClick={() => setDrawerOpen(true)}
+                    >
+                        Add User
+                    </Button>
+                </UsersFilter>
+            </Form>
 
             <Table
                 columns={columns}

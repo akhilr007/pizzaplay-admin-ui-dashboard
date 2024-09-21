@@ -1,15 +1,11 @@
-import { Input } from "antd";
+import { Form, Input } from "antd";
 
-interface SearchInputProps {
-    onFilterChange: (filterName: string, filterValue: string) => void;
-}
+import { FilterProps } from "../../pages/Users/types";
 
-export const SearchInput = ({ onFilterChange }: SearchInputProps) => {
+export const SearchInput: React.FC<FilterProps> = ({ name }) => {
     return (
-        <Input.Search
-            placeholder="search"
-            allowClear={true}
-            onChange={(e) => onFilterChange("searchFilter", e.target.value)}
-        />
+        <Form.Item name={name}>
+            <Input.Search placeholder="search" allowClear={true} />
+        </Form.Item>
     );
 };

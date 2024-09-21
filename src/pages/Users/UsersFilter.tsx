@@ -1,30 +1,38 @@
 import { Card, Col, Row } from "antd";
 import React from "react";
 
+import { Filter } from "../../components/Filter/Filter";
 import { SearchInput } from "../../components/SearchInput/SearchInput";
-import { RoleFilter } from "./RoleFilter";
-import { StatusFilter } from "./StatusFilter";
 
 interface UserFilterProps {
     children: React.ReactNode;
-    onFilterChange: (filterName: string, filterValue: string) => void;
 }
 
-export const UsersFilter = ({ onFilterChange, children }: UserFilterProps) => {
+const roleOptions = [
+    { value: "admin", label: "Admin" },
+    { value: "manager", label: "Manager" },
+    { value: "customer", label: "Customer" }
+];
+
+export const UsersFilter = ({ children }: UserFilterProps) => {
     return (
         <Card>
             <Row justify="space-between">
                 <Col span={20}>
                     <Row gutter={24}>
                         <Col span={8}>
-                            <SearchInput onFilterChange={onFilterChange} />
+                            <SearchInput name="q" />
                         </Col>
                         <Col span={4}>
-                            <RoleFilter onFilterChange={onFilterChange} />
+                            <Filter
+                                name="role"
+                                placeholder="Role"
+                                options={roleOptions}
+                            />
                         </Col>
-                        <Col span={4}>
+                        {/* <Col span={4}>
                             <StatusFilter onFilterChange={onFilterChange} />
-                        </Col>
+                        </Col> */}
                     </Row>
                 </Col>
                 <Col

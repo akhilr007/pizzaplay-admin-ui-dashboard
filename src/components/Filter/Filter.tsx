@@ -1,30 +1,30 @@
-import { Select } from "antd";
+import { Form, Select } from "antd";
 
-interface FilterProps {
+interface SelectFilterProps {
+    name: string;
     placeholder: string;
-    options: { value: string; label: string }[];
-    filterName: string;
-    onFilterChange: (filterName: string, filterValue: string) => void;
+    options: {
+        label: string;
+        value: string;
+    }[];
 }
 
-export const Filter: React.FC<FilterProps> = ({
+export const Filter: React.FC<SelectFilterProps> = ({
+    name,
     placeholder,
-    options,
-    filterName,
-    onFilterChange
+    options
 }) => (
-    <Select
-        placeholder={placeholder}
-        allowClear={true}
-        style={{ width: "100%" }}
-        onChange={(selectedItem) =>
-            onFilterChange(`${filterName}Filter`, selectedItem)
-        }
-    >
-        {options.map((option) => (
-            <Select.Option key={option.value} value={option.value}>
-                {option.label}
-            </Select.Option>
-        ))}
-    </Select>
+    <Form.Item name={name}>
+        <Select
+            placeholder={placeholder}
+            allowClear={true}
+            style={{ width: "100%" }}
+        >
+            {options.map((option) => (
+                <Select.Option key={option.value} value={option.value}>
+                    {option.label}
+                </Select.Option>
+            ))}
+        </Select>
+    </Form.Item>
 );
