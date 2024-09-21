@@ -27,7 +27,7 @@ export const TenantsDrawerForm: React.FC<Props> = ({
 
     return (
         <Drawer
-            title="Create New Tenant"
+            title="Create New Restaurant"
             destroyOnClose
             width={720}
             styles={{ body: { background: colorBgLayout } }}

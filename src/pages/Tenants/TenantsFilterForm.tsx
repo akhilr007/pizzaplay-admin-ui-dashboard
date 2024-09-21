@@ -23,7 +23,7 @@ export const TenantsFilterForm: React.FC<Props> = ({
                     icon={<PlusOutlined />}
                     onClick={onAddUserClick}
                 >
-                    Add User
+                    Add Restaurant
                 </Button>
             </TenantFilter>
         </Form>
