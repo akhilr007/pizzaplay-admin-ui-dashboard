@@ -1,37 +1,22 @@
 import { LoadingOutlined, RightOutlined } from "@ant-design/icons";
-import { PlusOutlined } from "@ant-design/icons";
-import {
-    Breadcrumb,
-    Button,
-    Drawer,
-    Flex,
-    Form,
-    Space,
-    Spin,
-    Table,
-    theme,
-    Typography
-} from "antd";
+import { Breadcrumb, Flex, Space, Spin, theme, Typography } from "antd";
 import { debounce } from "lodash";
-import { useState } from "react";
-import React from "react";
+import React, { useState } from "react";
 import { Link } from "react-router-dom";
 
 import { PER_PAGE } from "../../constants";
 import { useCreateUser } from "../../hooks/useCreateUser";
 import { useGetUsers } from "../../hooks/useGetUsers";
 import { useAuthStore } from "../../store";
-import { UserForm } from "./Forms/UserForm";
-import { FieldData, User } from "./types";
-import { UsersFilter } from "./UsersFilter";
+import { UserDrawerForm } from "./Forms/UsersDrawerForm";
+import { CreateUser, FieldData } from "./types";
+import { UsersFilterForm } from "./UsersFilterForm";
+import { UsersTable } from "./UsersTable";
 
-export const Users = () => {
-    const [form] = Form.useForm();
-    const [filterForm] = Form.useForm();
+export const Users: React.FC = () => {
     const { colorBgLayout } = theme.useToken().token;
     const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
-
     const [queryParams, setQueryParams] = useState({
         perPage: PER_PAGE,
         currentPage: 1,
@@ -46,64 +31,21 @@ export const Users = () => {
         error
     } = useGetUsers(queryParams, user?.role === "admin");
 
-    const columns = [
-        {
-            title: "ID",
-            dataIndex: "id",
-            key: "id"
-        },
-        {
-            title: "Name",
-            dataIndex: "firstName",
-            key: "firstName",
-            render: (_text: string, record: User) => {
-                return (
-                    <div>
-                        {record.firstName} {record.lastName}
-                    </div>
-                );
-            }
-        },
-        {
-            title: "Email",
-            dataIndex: "email",
-            key: "email"
-        },
-        {
-            title: "Role",
-            dataIndex: "role",
-            key: "role"
-        },
-        {
-            title: "Tenant",
-            dataIndex: "name",
-            key: "tenant",
-            render: (_text: string, record: User) => {
-                return record.tenant ? (
-                    <div>{record.tenant.name}</div>
-                ) : (
-                    <div>Not Applicable</div>
-                );
-            }
-        }
-    ];
-
     const {
         createUserMutation: { mutate: createUserMutate }
     } = useCreateUser();
 
-    const onHandleFormSubmit = async () => {
-        await form.validateFields();
-        createUserMutate(form.getFieldsValue());
-        form.resetFields();
-        setDrawerOpen(false);
-    };
+    const debouncedQUpdate = React.useMemo(
+        () =>
+            debounce((value: string) => {
+                setQueryParams((prev) => ({ ...prev, q: value }));
+            }, 500),
+        []
+    );
 
     const onFilterChange = (changedFields: FieldData[]) => {
         const changedFilterFields = changedFields
-            .map((field) => ({
-                [field.name[0]]: field.value
-            }))
+            .map((field) => ({ [field.name[0]]: field.value }))
             .reduce((acc, field) => ({ ...acc, ...field }), {});
 
         if ("q" in changedFilterFields) {
@@ -113,11 +55,9 @@ export const Users = () => {
         }
     };
 
-    const debouncedQUpdate = React.useMemo(() => {
-        return debounce((value: string) => {
-            setQueryParams((prev) => ({ ...prev, q: value }));
-        }, 500);
-    }, []);
+    const onFormSubmit = (values: CreateUser) => {
+        createUserMutate(values);
+    };
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
@@ -143,68 +83,28 @@ export const Users = () => {
                 )}
             </Flex>
 
-            <Form form={filterForm} onFieldsChange={onFilterChange}>
-                <UsersFilter>
-                    <Button
-                        type="primary"
-                        icon={<PlusOutlined />}
-                        onClick={() => setDrawerOpen(true)}
-                    >
-                        Add User
-                    </Button>
-                </UsersFilter>
-            </Form>
-
-            <Table
-                columns={columns}
-                dataSource={users?.data}
-                rowKey={"id"}
-                loading={isFetching}
-                pagination={{
-                    total: users?.total,
-                    pageSize: PER_PAGE,
-                    current: users?.currentPage,
-                    onChange: (page: number) => {
-                        setQueryParams((prev) => {
-                            return {
-                                ...prev,
-                                currentPage: page
-                            };
-                        });
-                    }
-                }}
+            <UsersFilterForm
+                onFilterChange={onFilterChange}
+                onAddUserClick={() => setDrawerOpen(true)}
             />
 
-            <Drawer
-                title="Create New User"
-                destroyOnClose
-                width={720}
-                styles={{ body: { background: colorBgLayout } }}
-                open={drawerOpen}
-                onClose={() => {
-                    form.resetFields();
-                    setDrawerOpen(false);
-                }}
-                extra={
-                    <Space>
-                        <Button
-                            onClick={() => {
-                                form.resetFields();
-                                setDrawerOpen(false);
-                            }}
-                        >
-                            Cancel
-                        </Button>
-                        <Button type="primary" onClick={onHandleFormSubmit}>
-                            Submit
-                        </Button>
-                    </Space>
+            <UsersTable
+                users={users?.data}
+                isLoading={isFetching}
+                currentPage={queryParams.currentPage}
+                perPage={queryParams.perPage}
+                totalUsers={users?.total}
+                onPageChange={(page: number) =>
+                    setQueryParams((prev) => ({ ...prev, currentPage: page }))
                 }
-            >
-                <Form form={form} layout="vertical">
-                    <UserForm />
-                </Form>
-            </Drawer>
+            />
+
+            <UserDrawerForm
+                drawerOpen={drawerOpen}
+                setDrawerOpen={setDrawerOpen}
+                onFormSubmit={onFormSubmit}
+                colorBgLayout={colorBgLayout}
+            />
         </Space>
     );
 };
