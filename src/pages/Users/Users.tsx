@@ -12,7 +12,9 @@ import {
     theme,
     Typography
 } from "antd";
+import { debounce } from "lodash";
 import { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
 import { PER_PAGE } from "../../constants";
@@ -104,10 +106,18 @@ export const Users = () => {
             }))
             .reduce((acc, field) => ({ ...acc, ...field }), {});
 
-        setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
-        console.log(changedFilterFields);
-        console.log(queryParams);
+        if ("q" in changedFilterFields) {
+            debouncedQUpdate(changedFilterFields.q ?? "");
+        } else {
+            setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
+        }
     };
+
+    const debouncedQUpdate = React.useMemo(() => {
+        return debounce((value: string) => {
+            setQueryParams((prev) => ({ ...prev, q: value }));
+        }, 500);
+    }, []);
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
