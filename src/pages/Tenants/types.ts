@@ -5,3 +5,8 @@ export type CreateTenant = {
     createdAt: string;
     updatedAt: string;
 };
+
+export type FieldData = {
+    name: string[];
+    value?: string;
+};

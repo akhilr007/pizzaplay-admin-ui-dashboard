@@ -1,56 +1,57 @@
-import { PlusOutlined, RightOutlined } from "@ant-design/icons";
-import { useQuery } from "@tanstack/react-query";
-import { Breadcrumb, Button, Space, Table, theme } from "antd";
+import { LoadingOutlined, RightOutlined } from "@ant-design/icons";
+import { Breadcrumb, Flex, Space, Spin, theme, Typography } from "antd";
+import { debounce } from "lodash";
 import { useState } from "react";
+import React from "react";
 import { Link } from "react-router-dom";
 
+import { PER_PAGE } from "../../constants";
 import { useCreateTenant } from "../../hooks/useCreateTenant";
-import { tenants } from "../../http/api";
+import { useGetTenants } from "../../hooks/useGetTenants";
 import { TenantsDrawerForm } from "./form/TenantsDrawerForm";
-import { TenantFilter } from "./TenantFilter";
-import { CreateTenant } from "./types";
-
-const getTenants = async () => {
-    const { data } = await tenants();
-    const { data: tenantsData } = data;
-    return tenantsData;
-};
+import { TenantsFilterForm } from "./TenantsFilterForm";
+import { TenantsTable } from "./TenantsTable";
+import { CreateTenant, FieldData } from "./types";
 
 export const Tenant = () => {
     const { colorBgLayout } = theme.useToken().token;
     const [drawerOpen, setDrawerOpen] = useState(false);
+    const [queryParams, setQueryParams] = useState({
+        perPage: PER_PAGE,
+        currentPage: 1,
+        q: ""
+    });
 
     const {
         data: tenants,
-        isLoading,
+        isFetching,
         isError,
         error
-    } = useQuery({
-        queryKey: ["tenants"],
-        queryFn: getTenants
-    });
-
-    const columns = [
-        {
-            title: "ID",
-            dataIndex: "id",
-            key: "id"
-        },
-        {
-            title: "Name",
-            dataIndex: "name",
-            key: "name"
-        },
-        {
-            title: "Address",
-            dataIndex: "address",
-            key: "address"
-        }
-    ];
+    } = useGetTenants(queryParams);
 
     const {
         createTenantMutation: { mutate: createTenantMutate }
     } = useCreateTenant();
+
+    const debouncedQUpdate = React.useMemo(
+        () =>
+            debounce((value: string) => {
+                setQueryParams((prev) => ({ ...prev, q: value }));
+            }, 500),
+        []
+    );
+
+    const onFilterChange = (changedFields: FieldData[]) => {
+        const changedFilterFields = changedFields
+            .map((field) => ({ [field.name[0]]: field.value }))
+            .reduce((acc, field) => ({ ...acc, ...field }), {});
+
+        if ("q" in changedFilterFields) {
+            debouncedQUpdate(changedFilterFields.q ?? "");
+        } else {
+            setQueryParams((prev) => ({ ...prev, ...changedFilterFields }));
+        }
+    };
 
     const onFormSubmit = (values: CreateTenant) => {
         createTenantMutate(values);
@@ -58,33 +59,43 @@ export const Tenant = () => {
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
-            <Breadcrumb
-                separator={<RightOutlined />}
-                items={[
-                    { title: <Link to="/">Dashboard</Link> },
-                    { title: "Tenants" }
-                ]}
+            <Flex justify="space-between">
+                <Breadcrumb
+                    separator={<RightOutlined />}
+                    items={[
+                        { title: <Link to="/">Dashboard</Link> },
+                        { title: "Tenants" }
+                    ]}
+                />
+                {isFetching && (
+                    <Spin
+                        indicator={
+                            <LoadingOutlined style={{ fontSize: 24 }} spin />
+                        }
+                    />
+                )}
+                {isError && (
+                    <Typography.Text type="danger">
+                        {error.message}
+                    </Typography.Text>
+                )}
+            </Flex>
+
+            <TenantsFilterForm
+                onFilterChange={onFilterChange}
+                onAddUserClick={() => setDrawerOpen(true)}
             />
 
-            {isLoading && <div>Loading...</div>}
-            {isError && <div>{error.message}</div>}
-
-            <TenantFilter
-                onFilterChange={() =>
-                    (filterName: string, filterValue: string) => {
-                        console.log(filterName, filterValue);
-                    }}
-            >
-                <Button
-                    type="primary"
-                    icon={<PlusOutlined />}
-                    onClick={() => setDrawerOpen(true)}
-                >
-                    Add Tenant
-                </Button>
-            </TenantFilter>
-
-            <Table columns={columns} dataSource={tenants} rowKey={"id"} />
+            <TenantsTable
+                users={tenants?.data}
+                isLoading={isFetching}
+                currentPage={queryParams.currentPage}
+                perPage={queryParams.perPage}
+                totalUsers={tenants?.total}
+                onPageChange={(page: number) =>
+                    setQueryParams((prev) => ({ ...prev, currentPage: page }))
+                }
+            />
 
             <TenantsDrawerForm
                 drawerOpen={drawerOpen}

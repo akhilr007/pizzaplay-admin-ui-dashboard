@@ -4,18 +4,14 @@ import { SearchInput } from "../../components/SearchInput/SearchInput";
 
 interface TenantFilterProps {
     children: React.ReactNode;
-    onFilterChange: (filterName: string, filterValue: string) => void;
 }
 
-export const TenantFilter = ({
-    onFilterChange,
-    children
-}: TenantFilterProps) => {
+export const TenantFilter = ({ children }: TenantFilterProps) => {
     return (
         <Card>
             <Row justify="space-between">
                 <Col>
-                    <SearchInput onFilterChange={onFilterChange} />
+                    <SearchInput name="q" />
                 </Col>
                 <Col
                     span={8}
