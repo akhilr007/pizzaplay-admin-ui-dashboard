@@ -81,6 +81,7 @@ export const UsersTable: React.FC<Props> = ({
         },
         {
             title: "",
+            align: "right" as const,
             render: (_: string, record: User) => {
                 return (
                     <Space size="large">

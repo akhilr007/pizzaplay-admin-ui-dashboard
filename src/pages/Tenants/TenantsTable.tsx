@@ -35,6 +35,7 @@ export const TenantsTable: React.FC<Props> = ({
         },
         {
             title: "",
+            align: "right" as const,
             render: (_: string, record: Tenant) => {
                 return (
                     <Space size="large">
