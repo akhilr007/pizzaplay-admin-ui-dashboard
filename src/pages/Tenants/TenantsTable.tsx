@@ -1,4 +1,4 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { EditOutlined } from "@ant-design/icons";
 import { Button, Space, Table } from "antd";
 
 import { Tenant } from "../Users/types";
@@ -42,12 +42,6 @@ export const TenantsTable: React.FC<Props> = ({
                             type="link"
                             icon={<EditOutlined style={{ fontSize: "24px" }} />}
                             onClick={() => onEditTenant(record)}
-                        ></Button>
-                        <Button
-                            type="link"
-                            icon={
-                                <DeleteOutlined style={{ fontSize: "24px" }} />
-                            }
                         ></Button>
                     </Space>
                 );
