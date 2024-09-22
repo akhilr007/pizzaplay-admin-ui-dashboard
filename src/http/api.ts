@@ -10,9 +10,9 @@ export const whoami = () => api.get("/auth/whoami");
 
 export const logout = () => api.post("/auth/logout");
 
-export const users = (queryString: string) => api.get(`/users?${queryString}`);
+export const users = (queryString?: string) => api.get(`/users?${queryString}`);
 
-export const tenants = (queryString: string) =>
+export const tenants = (queryString?: string) =>
     api.get(`/tenants?${queryString}`);
 
 export const createUser = (user: CreateUser) => api.post("/users", user);
