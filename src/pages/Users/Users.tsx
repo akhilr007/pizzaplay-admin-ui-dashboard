@@ -6,9 +6,10 @@ import { PageContentHeader } from "../../components/PageContentHeader/PageConten
 import { PER_PAGE } from "../../constants";
 import { useCreateUser } from "../../hooks/useCreateUser";
 import { useGetUsers } from "../../hooks/useGetUsers";
+import { useUpdateUser } from "../../hooks/useUpdateUser";
 import { useAuthStore } from "../../store";
 import { UserDrawerForm } from "./Forms/UsersDrawerForm";
-import { CreateUser, FieldData } from "./types";
+import { CreateUser, FieldData, User } from "./types";
 import { UsersFilterForm } from "./UsersFilterForm";
 import { UsersTable } from "./UsersTable";
 
@@ -22,6 +23,7 @@ export const Users: React.FC = () => {
         q: "",
         role: ""
     });
+    const [editUser, setEditUser] = useState<User | null>(null);
 
     const {
         data: users,
@@ -33,6 +35,10 @@ export const Users: React.FC = () => {
     const {
         createUserMutation: { mutate: createUserMutate }
     } = useCreateUser();
+
+    const {
+        updateUserMutation: { mutate: updateUserMutate }
+    } = useUpdateUser();
 
     const debouncedQUpdate = React.useMemo(
         () =>
@@ -63,7 +69,25 @@ export const Users: React.FC = () => {
     };
 
     const onFormSubmit = (values: CreateUser) => {
-        createUserMutate(values);
+        const isEditMode = !!editUser;
+        if (isEditMode) {
+            const value = {
+                user: values,
+                id: editUser.id
+            };
+            updateUserMutate(value);
+        } else {
+            createUserMutate(values);
+        }
+
+        setEditUser(null);
+    };
+
+    const onEditUser = (user: User) => {
+        setEditUser(user);
+        console.log(editUser);
+
+        setDrawerOpen(true);
     };
 
     return (
@@ -77,7 +101,10 @@ export const Users: React.FC = () => {
 
             <UsersFilterForm
                 onFilterChange={onFilterChange}
-                onAddUserClick={() => setDrawerOpen(true)}
+                onAddUserClick={() => {
+                    setEditUser(null);
+                    setDrawerOpen(true);
+                }}
             />
 
             <UsersTable
@@ -89,6 +116,7 @@ export const Users: React.FC = () => {
                 onPageChange={(page: number) =>
                     setQueryParams((prev) => ({ ...prev, currentPage: page }))
                 }
+                onEditUser={onEditUser}
             />
 
             <UserDrawerForm
@@ -96,6 +124,7 @@ export const Users: React.FC = () => {
                 setDrawerOpen={setDrawerOpen}
                 onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
+                editUser={editUser}
             />
         </Space>
     );

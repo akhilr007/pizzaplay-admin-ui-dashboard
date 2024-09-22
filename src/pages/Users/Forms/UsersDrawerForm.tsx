@@ -1,6 +1,7 @@
 import { Button, Drawer, Form, Space } from "antd";
+import { useEffect } from "react";
 
-import { CreateUser } from "../types";
+import { CreateUser, User } from "../types";
 import { UserForm } from "./UserForm";
 
 type Props = {
@@ -8,13 +9,15 @@ type Props = {
     setDrawerOpen: (open: boolean) => void;
     onFormSubmit: (values: CreateUser) => void;
     colorBgLayout: string;
+    editUser: User | null;
 };
 
 export const UserDrawerForm: React.FC<Props> = ({
     drawerOpen,
     setDrawerOpen,
     onFormSubmit,
-    colorBgLayout
+    colorBgLayout,
+    editUser
 }) => {
     const [form] = Form.useForm();
 
@@ -25,9 +28,15 @@ export const UserDrawerForm: React.FC<Props> = ({
         setDrawerOpen(false);
     };
 
+    useEffect(() => {
+        if (editUser) {
+            form.setFieldsValue({ ...editUser, tenantId: editUser.tenant?.id });
+        }
+    }, [editUser, form]);
+
     return (
         <Drawer
-            title="Create New User"
+            title={editUser ? "Edit User" : "Create New User"}
             destroyOnClose
             width={720}
             styles={{ body: { background: colorBgLayout } }}
@@ -53,7 +62,7 @@ export const UserDrawerForm: React.FC<Props> = ({
             }
         >
             <Form form={form} layout="vertical">
-                <UserForm />
+                <UserForm isEditMode={!!editUser} />
             </Form>
         </Drawer>
     );

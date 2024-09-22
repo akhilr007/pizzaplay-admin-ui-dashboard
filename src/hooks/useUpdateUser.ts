@@ -1,14 +1,14 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import { createUser } from "../http/api";
+import { updateUser } from "../http/api";
 import { CreateUser } from "../pages/Users/types";
 
-export const useCreateUser = () => {
+export const useUpdateUser = () => {
     const queryClient = useQueryClient();
-    const createUserMutation = useMutation({
-        mutationKey: ["createUser"],
-        mutationFn: async (user: CreateUser) => {
-            const { data } = await createUser(user);
+    const updateUserMutation = useMutation({
+        mutationKey: ["updateUser"],
+        mutationFn: async (value: { user: CreateUser; id: number }) => {
+            const { data } = await updateUser(value.user, value.id);
             return data;
         },
         onSuccess: async () => {
@@ -19,6 +19,6 @@ export const useCreateUser = () => {
     });
 
     return {
-        createUserMutation
+        updateUserMutation
     };
 };

@@ -23,6 +23,15 @@ export type CreateUser = {
     tenant: number;
 };
 
+export type UpdateUser = {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    role: string;
+    tenant: number;
+};
+
 export type FieldData = {
     name: string[];
     value?: string;

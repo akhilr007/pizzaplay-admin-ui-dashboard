@@ -10,7 +10,7 @@ const getTenants = async () => {
     return tenantsData;
 };
 
-export const UserForm = () => {
+export const UserForm = ({ isEditMode }: { isEditMode: boolean }) => {
     const roleOptions = [
         { value: "admin", label: "Admin" },
         { value: "manager", label: "Manager" },
@@ -77,24 +77,28 @@ export const UserForm = () => {
                             </Col>
                         </Row>
                     </Card>
-                    <Card title="Security Info">
-                        <Row gutter={24}>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Password:"
-                                    name="password"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message: "Password cannot be empty"
-                                        }
-                                    ]}
-                                >
-                                    <Input type="password" allowClear />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-                    </Card>
+                    {!isEditMode && (
+                        <Card title="Security Info">
+                            <Row gutter={24}>
+                                <Col span={12}>
+                                    <Form.Item
+                                        label="Password:"
+                                        name="password"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Password cannot be empty"
+                                            }
+                                        ]}
+                                    >
+                                        <Input type="password" allowClear />
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                    )}
+
                     <Card title="Roles">
                         <Row gutter={24}>
                             <Col span={12}>
@@ -108,7 +112,10 @@ export const UserForm = () => {
                                         }
                                     ]}
                                 >
-                                    <Select style={{ width: "100%" }}>
+                                    <Select
+                                        style={{ width: "100%" }}
+                                        id="userFormRole"
+                                    >
                                         {roleOptions.map((option) => (
                                             <Select.Option
                                                 key={option.value}
