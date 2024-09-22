@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { PageContentHeader } from "../../components/PageContentHeader/PageContentHeader";
 import { PER_PAGE } from "../../constants";
 import { useCreateUser } from "../../hooks/useCreateUser";
+import { useDeleteUser } from "../../hooks/useDeleteUser";
 import { useGetUsers } from "../../hooks/useGetUsers";
 import { useUpdateUser } from "../../hooks/useUpdateUser";
 import { useAuthStore } from "../../store";
@@ -39,6 +40,10 @@ export const Users: React.FC = () => {
     const {
         updateUserMutation: { mutate: updateUserMutate }
     } = useUpdateUser();
+
+    const {
+        deleteUserMutation: { mutate: deleteUserMutate }
+    } = useDeleteUser();
 
     const debouncedQUpdate = React.useMemo(
         () =>
@@ -90,6 +95,10 @@ export const Users: React.FC = () => {
         setDrawerOpen(true);
     };
 
+    const onDeleteUser = (userId: number) => {
+        deleteUserMutate(userId);
+    };
+
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
             <PageContentHeader
@@ -117,6 +126,7 @@ export const Users: React.FC = () => {
                     setQueryParams((prev) => ({ ...prev, currentPage: page }))
                 }
                 onEditUser={onEditUser}
+                onDeleteUser={onDeleteUser}
             />
 
             <UserDrawerForm

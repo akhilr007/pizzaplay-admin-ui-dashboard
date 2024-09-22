@@ -1,5 +1,6 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Space, Table } from "antd";
+import { Button, Modal, Space, Table } from "antd";
+import { useState } from "react";
 
 import { User } from "./types";
 
@@ -11,6 +12,7 @@ type Props = {
     totalUsers: number | undefined;
     onPageChange: (page: number) => void;
     onEditUser: (user: User) => void;
+    onDeleteUser: (id: number) => void;
 };
 
 export const UsersTable: React.FC<Props> = ({
@@ -20,8 +22,28 @@ export const UsersTable: React.FC<Props> = ({
     perPage,
     totalUsers,
     onPageChange,
-    onEditUser
+    onEditUser,
+    onDeleteUser
 }) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedUserId, setSelectedUserId] = useState<number | null>(null);
+
+    const showDeleteConfirm = (userId: number) => {
+        setSelectedUserId(userId);
+        setIsModalVisible(true);
+    };
+
+    const handleDelete = () => {
+        if (selectedUserId !== null) {
+            onDeleteUser(selectedUserId);
+        }
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setIsModalVisible(false);
+    };
+
     const columns = [
         {
             title: "Name",
@@ -70,7 +92,10 @@ export const UsersTable: React.FC<Props> = ({
                         <Button
                             type="link"
                             icon={
-                                <DeleteOutlined style={{ fontSize: "24px" }} />
+                                <DeleteOutlined
+                                    style={{ fontSize: "24px" }}
+                                    onClick={() => showDeleteConfirm(record.id)}
+                                />
                             }
                         ></Button>
                     </Space>
@@ -80,20 +105,33 @@ export const UsersTable: React.FC<Props> = ({
     ];
 
     return (
-        <Table
-            columns={columns}
-            dataSource={users}
-            rowKey={"id"}
-            loading={isLoading}
-            pagination={{
-                total: totalUsers,
-                pageSize: perPage,
-                current: currentPage,
-                onChange: onPageChange,
-                showTotal: (total: number, range: number[]) => {
-                    return `Showing ${range[0]}-${range[1]} of ${total} items`;
-                }
-            }}
-        />
+        <>
+            <Table
+                columns={columns}
+                dataSource={users}
+                rowKey={"id"}
+                loading={isLoading}
+                pagination={{
+                    total: totalUsers,
+                    pageSize: perPage,
+                    current: currentPage,
+                    onChange: onPageChange,
+                    showTotal: (total: number, range: number[]) => {
+                        return `Showing ${range[0]}-${range[1]} of ${total} items`;
+                    }
+                }}
+            />
+            <Modal
+                title="Confirm Deletion"
+                open={isModalVisible}
+                onOk={handleDelete}
+                onCancel={handleCancel}
+                okText="Yes, Delete"
+                cancelText="Cancel"
+                width={500}
+            >
+                <p>Are you sure you want to delete this user?</p>
+            </Modal>
+        </>
     );
 };
