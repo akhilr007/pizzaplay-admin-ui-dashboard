@@ -7,12 +7,14 @@ import { PageContentHeader } from "../../components/PageContentHeader/PageConten
 import { PER_PAGE } from "../../constants";
 import { useCreateTenant } from "../../hooks/useCreateTenant";
 import { useGetTenants } from "../../hooks/useGetTenants";
+import { useUpdateTenant } from "../../hooks/useUpdateTenant";
+import { Tenant } from "../Users/types";
 import { TenantsDrawerForm } from "./form/TenantsDrawerForm";
 import { TenantsFilterForm } from "./TenantsFilterForm";
 import { TenantsTable } from "./TenantsTable";
 import { CreateTenant, FieldData } from "./types";
 
-export const Tenant = () => {
+export const Tenants = () => {
     const { colorBgLayout } = theme.useToken().token;
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [queryParams, setQueryParams] = useState({
@@ -20,6 +22,7 @@ export const Tenant = () => {
         currentPage: 1,
         q: ""
     });
+    const [editTenant, setEditTenant] = useState<Tenant | null>(null);
 
     const {
         data: tenants,
@@ -31,6 +34,10 @@ export const Tenant = () => {
     const {
         createTenantMutation: { mutate: createTenantMutate }
     } = useCreateTenant();
+
+    const {
+        updateTenantMutation: { mutate: updateTenantMutate }
+    } = useUpdateTenant();
 
     const debouncedQUpdate = React.useMemo(
         () =>
@@ -61,7 +68,23 @@ export const Tenant = () => {
     };
 
     const onFormSubmit = (values: CreateTenant) => {
-        createTenantMutate(values);
+        const isEditMode = !!editTenant;
+        if (isEditMode) {
+            const value = {
+                tenant: values,
+                id: editTenant.id
+            };
+            updateTenantMutate(value);
+        } else {
+            createTenantMutate(values);
+        }
+
+        setEditTenant(null);
+    };
+
+    const onEditTenant = (tenant: Tenant) => {
+        setEditTenant(tenant);
+        setDrawerOpen(true);
     };
 
     return (
@@ -75,7 +98,10 @@ export const Tenant = () => {
 
             <TenantsFilterForm
                 onFilterChange={onFilterChange}
-                onAddUserClick={() => setDrawerOpen(true)}
+                onAddUserClick={() => {
+                    setEditTenant(null);
+                    setDrawerOpen(true);
+                }}
             />
 
             <TenantsTable
@@ -87,6 +113,7 @@ export const Tenant = () => {
                 onPageChange={(page: number) =>
                     setQueryParams((prev) => ({ ...prev, currentPage: page }))
                 }
+                onEditTenant={onEditTenant}
             />
 
             <TenantsDrawerForm
@@ -94,6 +121,7 @@ export const Tenant = () => {
                 setDrawerOpen={setDrawerOpen}
                 onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
+                editTenant={editTenant}
             />
         </Space>
     );

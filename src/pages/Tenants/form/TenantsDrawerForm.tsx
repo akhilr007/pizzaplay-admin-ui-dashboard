@@ -1,5 +1,7 @@
 import { Button, Drawer, Form, Space } from "antd";
+import { useEffect } from "react";
 
+import { Tenant } from "../../Users/types";
 import { CreateTenant } from "../types";
 import { TenantForm } from "./TenantForm";
 
@@ -8,13 +10,15 @@ type Props = {
     setDrawerOpen: (open: boolean) => void;
     onFormSubmit: (values: CreateTenant) => void;
     colorBgLayout: string;
+    editTenant: Tenant | null;
 };
 
 export const TenantsDrawerForm: React.FC<Props> = ({
     drawerOpen,
     setDrawerOpen,
     onFormSubmit,
-    colorBgLayout
+    colorBgLayout,
+    editTenant
 }) => {
     const [form] = Form.useForm();
 
@@ -25,9 +29,15 @@ export const TenantsDrawerForm: React.FC<Props> = ({
         setDrawerOpen(false);
     };
 
+    useEffect(() => {
+        if (editTenant) {
+            form.setFieldsValue(editTenant);
+        }
+    }, [editTenant, form]);
+
     return (
         <Drawer
-            title="Create New Restaurant"
+            title={editTenant ? "Edit Restaurant" : "Create New Restaurant"}
             destroyOnClose
             width={720}
             styles={{ body: { background: colorBgLayout } }}

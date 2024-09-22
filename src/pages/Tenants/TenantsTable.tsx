@@ -1,4 +1,5 @@
-import { Table } from "antd";
+import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
+import { Button, Space, Table } from "antd";
 
 import { Tenant } from "../Users/types";
 
@@ -9,6 +10,7 @@ type Props = {
     perPage: number;
     totalUsers: number | undefined;
     onPageChange: (page: number) => void;
+    onEditTenant: (tenant: Tenant) => void;
 };
 
 export const TenantsTable: React.FC<Props> = ({
@@ -17,7 +19,8 @@ export const TenantsTable: React.FC<Props> = ({
     currentPage,
     perPage,
     totalUsers,
-    onPageChange
+    onPageChange,
+    onEditTenant
 }) => {
     const columns = [
         {
@@ -29,6 +32,26 @@ export const TenantsTable: React.FC<Props> = ({
             title: "Address",
             dataIndex: "address",
             key: "address"
+        },
+        {
+            title: "",
+            render: (_: string, record: Tenant) => {
+                return (
+                    <Space size="large">
+                        <Button
+                            type="link"
+                            icon={<EditOutlined style={{ fontSize: "24px" }} />}
+                            onClick={() => onEditTenant(record)}
+                        ></Button>
+                        <Button
+                            type="link"
+                            icon={
+                                <DeleteOutlined style={{ fontSize: "24px" }} />
+                            }
+                        ></Button>
+                    </Space>
+                );
+            }
         }
     ];
 
