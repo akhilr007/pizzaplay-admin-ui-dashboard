@@ -13,14 +13,15 @@ const getTenants = async () => {
 export const UserForm = ({ isEditMode }: { isEditMode: boolean }) => {
     const roleOptions = [
         { value: "admin", label: "Admin" },
-        { value: "manager", label: "Manager" },
-        { value: "customer", label: "Customer" }
+        { value: "manager", label: "Manager" }
     ];
 
     const { data: tenants } = useQuery({
         queryKey: ["tenants"],
         queryFn: getTenants
     });
+
+    const selectedRole = Form.useWatch("role");
 
     return (
         <Row>
@@ -127,30 +128,32 @@ export const UserForm = ({ isEditMode }: { isEditMode: boolean }) => {
                                     </Select>
                                 </Form.Item>
                             </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    label="Restaurant:"
-                                    name="tenantId"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Restaurant cannot be empty"
-                                        }
-                                    ]}
-                                >
-                                    <Select style={{ width: "100%" }}>
-                                        {tenants?.map((tenant: Tenant) => (
-                                            <Select.Option
-                                                key={tenant.id}
-                                                value={tenant.id}
-                                            >
-                                                {tenant.name}
-                                            </Select.Option>
-                                        ))}
-                                    </Select>
-                                </Form.Item>
-                            </Col>
+                            {selectedRole === "manager" && (
+                                <Col span={12}>
+                                    <Form.Item
+                                        label="Restaurant:"
+                                        name="tenantId"
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Restaurant cannot be empty"
+                                            }
+                                        ]}
+                                    >
+                                        <Select style={{ width: "100%" }}>
+                                            {tenants?.map((tenant: Tenant) => (
+                                                <Select.Option
+                                                    key={tenant.id}
+                                                    value={tenant.id}
+                                                >
+                                                    {tenant.name}
+                                                </Select.Option>
+                                            ))}
+                                        </Select>
+                                    </Form.Item>
+                                </Col>
+                            )}
                         </Row>
                     </Card>
                 </Space>
