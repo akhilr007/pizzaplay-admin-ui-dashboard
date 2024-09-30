@@ -14,7 +14,7 @@ export const Filter: React.FC<SelectFilterProps> = ({
     placeholder,
     options
 }) => (
-    <Form.Item name={name}>
+    <Form.Item name={name} style={{ margin: 0 }}>
         <Select
             placeholder={placeholder}
             allowClear={true}
