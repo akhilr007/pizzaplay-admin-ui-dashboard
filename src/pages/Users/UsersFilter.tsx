@@ -17,9 +17,9 @@ const roleOptions = [
 export const UsersFilter = ({ children }: UserFilterProps) => {
     return (
         <Card>
-            <Row justify="space-between">
+            <Row justify="space-between" align="middle">
                 <Col span={20}>
-                    <Row gutter={24}>
+                    <Row gutter={24} align="middle">
                         <Col span={8}>
                             <SearchInput name="q" />
                         </Col>
@@ -30,9 +30,6 @@ export const UsersFilter = ({ children }: UserFilterProps) => {
                                 options={roleOptions}
                             />
                         </Col>
-                        {/* <Col span={4}>
-                            <StatusFilter onFilterChange={onFilterChange} />
-                        </Col> */}
                     </Row>
                 </Col>
                 <Col
