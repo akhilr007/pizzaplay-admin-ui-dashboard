@@ -53,6 +53,8 @@ export const list: OrderList[] = [
 
 export const PER_PAGE = 6;
 
+export const OPTION_PER_PAGE = 100;
+
 export const colorMapping = {
     received: "processing",
     confirmed: "orange",

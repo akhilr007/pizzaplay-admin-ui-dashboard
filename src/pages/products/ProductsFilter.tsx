@@ -1,15 +1,44 @@
 import { Card, Col, Row } from "antd";
-import React from "react";
+import React, { useState } from "react";
 
 import { Filter } from "../../components/Filter/Filter";
 import { SearchInput } from "../../components/SearchInput/SearchInput";
 import { SwitchComponent } from "../../components/Switch/Switch";
+import { OPTION_PER_PAGE } from "../../constants";
+import { useGetCategories } from "../../hooks/useGetCategories";
+import { useGetTenants } from "../../hooks/useGetTenants";
+import { Tenant } from "../Users/types";
+import { Category } from "./types";
 
 interface ProductFilterProps {
     children: React.ReactNode;
 }
 
 export const ProductsFilter = ({ children }: ProductFilterProps) => {
+    const [queryParams, setQueryParams] = useState({
+        perPage: OPTION_PER_PAGE,
+        currentPage: 1,
+        q: ""
+    });
+
+    const { data: restaurants } = useGetTenants(queryParams);
+
+    const { data: categories } = useGetCategories();
+
+    const restaurantOption = restaurants?.data?.map((restaurant: Tenant) => {
+        return {
+            label: restaurant?.name,
+            value: restaurant?.id
+        };
+    });
+
+    const categoryOption = categories?.map((category: Category) => {
+        return {
+            label: category?.name,
+            value: category?._id
+        };
+    });
+
     return (
         <Card>
             <Row
@@ -26,14 +55,14 @@ export const ProductsFilter = ({ children }: ProductFilterProps) => {
                             <Filter
                                 name="category"
                                 placeholder="Category"
-                                options={[]}
+                                options={categoryOption}
                             />
                         </Col>
                         <Col span={5}>
                             <Filter
-                                name="tenant"
+                                name="restaurant"
                                 placeholder="Restaurants"
-                                options={[]}
+                                options={restaurantOption}
                             />
                         </Col>
 

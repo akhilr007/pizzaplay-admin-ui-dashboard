@@ -20,7 +20,7 @@ export const Filter: React.FC<SelectFilterProps> = ({
             allowClear={true}
             style={{ width: "100%" }}
         >
-            {options.map((option) => (
+            {options?.map((option) => (
                 <Select.Option key={option.value} value={option.value}>
                     {option.label}
                 </Select.Option>

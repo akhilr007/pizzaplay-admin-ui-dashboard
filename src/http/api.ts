@@ -31,3 +31,7 @@ export const createTenant = (tenant: Tenant) =>
 
 export const updateTenant = (tenant: Tenant, id: number) =>
     api.patch(`${AUTH_SERVICE}/tenants/${id}`, tenant);
+
+// Categories
+const CATALOG_SERVICE = "/api/v1";
+export const categories = () => api.get(`${CATALOG_SERVICE}/categories`);
