@@ -7,15 +7,15 @@ import { SwitchComponent } from "../../components/Switch/Switch";
 import { OPTION_PER_PAGE } from "../../constants";
 import { useGetCategories } from "../../hooks/useGetCategories";
 import { useGetTenants } from "../../hooks/useGetTenants";
-import { Tenant, User } from "../Users/types";
+import { Tenant } from "../Users/types";
 import { Category } from "./types";
 
 interface ProductFilterProps {
     children: React.ReactNode;
-    user: User;
+    userRole: string | undefined;
 }
 
-export const ProductsFilter = ({ children, user }: ProductFilterProps) => {
+export const ProductsFilter = ({ children, userRole }: ProductFilterProps) => {
     const [queryParams] = useState({
         perPage: OPTION_PER_PAGE,
         currentPage: 1,
@@ -60,7 +60,7 @@ export const ProductsFilter = ({ children, user }: ProductFilterProps) => {
                                 options={categoryOption}
                             />
                         </Col>
-                        {user.role === "admin" && (
+                        {userRole === "admin" && (
                             <Col span={5}>
                                 <Filter
                                     name="tenantId"

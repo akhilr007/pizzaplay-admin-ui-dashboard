@@ -12,6 +12,7 @@ import { FieldData } from "./types";
 
 export const Products = () => {
     const { user } = useAuthStore();
+
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
 
@@ -72,7 +73,7 @@ export const Products = () => {
 
             <ProductsFilterForm
                 onFilterChange={onFilterChange}
-                user={user}
+                userRole={user?.role}
                 onAddProductClick={() => {
                     setEditProduct(null);
                     setDrawerOpen(true);
