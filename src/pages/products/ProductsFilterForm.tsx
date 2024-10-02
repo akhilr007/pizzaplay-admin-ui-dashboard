@@ -2,9 +2,10 @@ import { PlusOutlined } from "@ant-design/icons";
 import { Button, Form } from "antd";
 
 import { ProductsFilter } from "./ProductsFilter";
+import { FieldData } from "./types";
 
 type Props = {
-    onFilterChange: () => void;
+    onFilterChange: (changedFields: FieldData[]) => void;
     onAddProductClick: () => void;
 };
 

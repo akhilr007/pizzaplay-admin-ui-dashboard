@@ -1,11 +1,13 @@
 import { Space } from "antd";
-import { useState } from "react";
+import { debounce } from "lodash";
+import { useMemo, useState } from "react";
 
 import { PageContentHeader } from "../../components/PageContentHeader/PageContentHeader";
 import { PER_PAGE } from "../../constants";
 import { useGetProducts } from "../../hooks/useGetProducts";
 import { ProductsFilterForm } from "./ProductsFilterForm";
 import { ProductsTable } from "./ProductsTable";
+import { FieldData } from "./types";
 
 export const Products = () => {
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -23,7 +25,36 @@ export const Products = () => {
         isError,
         error
     } = useGetProducts(queryParams);
-    const onFilterChange = () => {};
+
+    const debouncedQUpdate = useMemo(
+        () =>
+            debounce((value: string) => {
+                setQueryParams((prev) => ({
+                    ...prev,
+                    q: value,
+                    currentPage: 1
+                }));
+            }, 500),
+        []
+    );
+
+    const onFilterChange = (changedFields: FieldData[]) => {
+        const changedFilterFields = changedFields
+            .map((field) => ({ [field.name[0]]: field.value }))
+            .reduce((acc, field) => ({ ...acc, ...field }), {});
+
+        console.log(changedFilterFields);
+
+        if ("q" in changedFilterFields) {
+            debouncedQUpdate(changedFilterFields.q ?? "");
+        } else {
+            setQueryParams((prev) => ({
+                ...prev,
+                ...changedFilterFields,
+                currentPage: 1
+            }));
+        }
+    };
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">

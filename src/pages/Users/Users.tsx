@@ -58,6 +58,8 @@ export const Users: React.FC = () => {
     );
 
     const onFilterChange = (changedFields: FieldData[]) => {
+        console.log(changedFields);
+
         const changedFilterFields = changedFields
             .map((field) => ({ [field.name[0]]: field.value }))
             .reduce((acc, field) => ({ ...acc, ...field }), {});

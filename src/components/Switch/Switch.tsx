@@ -1,13 +1,25 @@
-import { Space, Switch, Typography } from "antd";
-import FormItem from "antd/es/form/FormItem";
+import { Form, Switch } from "antd";
 
-export const SwitchComponent = () => {
+interface SwitchFilterProps {
+    name: string;
+    isOn: string;
+    isOff: string;
+}
+
+export const SwitchComponent: React.FC<SwitchFilterProps> = ({
+    name,
+    isOn,
+    isOff
+}) => {
     return (
-        <FormItem style={{ margin: 0 }}>
-            <Space>
-                <Switch defaultChecked onChange={() => {}} />
-                <Typography.Text>Show only published</Typography.Text>
-            </Space>
-        </FormItem>
+        <Form.Item name={name} style={{ margin: 0 }}>
+            <Switch
+                defaultChecked={false}
+                onChange={() => {}}
+                checkedChildren={isOn}
+                unCheckedChildren={isOff}
+                size="default"
+            />
+        </Form.Item>
     );
 };

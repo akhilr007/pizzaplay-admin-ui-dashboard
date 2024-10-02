@@ -23,7 +23,6 @@ const getProducts = async ({
     );
     const queryString = new URLSearchParams(filteredParams).toString();
     const { data } = await products(queryString);
-    console.log(data);
     return data;
 };
 

@@ -1,5 +1,5 @@
 import { Card, Col, Row } from "antd";
-import React, { useState } from "react";
+import { useState } from "react";
 
 import { Filter } from "../../components/Filter/Filter";
 import { SearchInput } from "../../components/SearchInput/SearchInput";
@@ -15,10 +15,11 @@ interface ProductFilterProps {
 }
 
 export const ProductsFilter = ({ children }: ProductFilterProps) => {
-    const [queryParams, setQueryParams] = useState({
+    const [queryParams] = useState({
         perPage: OPTION_PER_PAGE,
         currentPage: 1,
-        q: ""
+        q: "",
+        role: ""
     });
 
     const { data: restaurants } = useGetTenants(queryParams);
@@ -53,21 +54,25 @@ export const ProductsFilter = ({ children }: ProductFilterProps) => {
                         </Col>
                         <Col span={5}>
                             <Filter
-                                name="category"
+                                name="categoryId"
                                 placeholder="Category"
                                 options={categoryOption}
                             />
                         </Col>
                         <Col span={5}>
                             <Filter
-                                name="restaurant"
+                                name="tenantId"
                                 placeholder="Restaurants"
                                 options={restaurantOption}
                             />
                         </Col>
 
                         <Col span={6}>
-                            <SwitchComponent />
+                            <SwitchComponent
+                                name="isPublished"
+                                isOn="Show Published"
+                                isOff="Show All"
+                            />
                         </Col>
                     </Row>
                 </Col>
