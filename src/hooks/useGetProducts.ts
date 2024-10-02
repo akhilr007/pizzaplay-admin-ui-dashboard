@@ -10,7 +10,9 @@ interface QueryParams {
     currentPage: number;
     perPage: number;
     q: string;
-    role: string;
+    tenantId: number | undefined;
+    categoryId: string | number;
+    isPublished: boolean | string;
 }
 
 const getProducts = async ({

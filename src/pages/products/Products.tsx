@@ -5,18 +5,23 @@ import { useMemo, useState } from "react";
 import { PageContentHeader } from "../../components/PageContentHeader/PageContentHeader";
 import { PER_PAGE } from "../../constants";
 import { useGetProducts } from "../../hooks/useGetProducts";
+import { useAuthStore } from "../../store";
 import { ProductsFilterForm } from "./ProductsFilterForm";
 import { ProductsTable } from "./ProductsTable";
 import { FieldData } from "./types";
 
 export const Products = () => {
+    const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [editProduct, setEditProduct] = useState(null);
+
     const [queryParams, setQueryParams] = useState({
         perPage: PER_PAGE,
         currentPage: 1,
         q: "",
-        role: ""
+        categoryId: "",
+        tenantId: user?.role === "manager" ? user?.tenant?.id : undefined,
+        isPublished: ""
     });
 
     const {
@@ -67,6 +72,7 @@ export const Products = () => {
 
             <ProductsFilterForm
                 onFilterChange={onFilterChange}
+                user={user}
                 onAddProductClick={() => {
                     setEditProduct(null);
                     setDrawerOpen(true);
