@@ -32,6 +32,7 @@ export interface ProductAttribute {
 }
 
 export interface Product {
+    _id: string;
     name: string;
     description: string;
     image: string;

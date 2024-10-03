@@ -36,5 +36,8 @@ export const updateTenant = (tenant: Tenant, id: number) =>
 const CATALOG_SERVICE = "/api/v1";
 export const categories = () => api.get(`${CATALOG_SERVICE}/categories`);
 
+export const getCategory = (id: string) =>
+    api.get(`${CATALOG_SERVICE}/categories/${id}`);
+
 export const products = (queryString?: string) =>
     api.get(`${CATALOG_SERVICE}/products?${queryString}`);

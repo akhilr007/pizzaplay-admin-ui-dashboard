@@ -1,4 +1,4 @@
-import { Space } from "antd";
+import { Space, theme } from "antd";
 import { debounce } from "lodash";
 import { useMemo, useState } from "react";
 
@@ -6,15 +6,16 @@ import { PageContentHeader } from "../../components/PageContentHeader/PageConten
 import { PER_PAGE } from "../../constants";
 import { useGetProducts } from "../../hooks/useGetProducts";
 import { useAuthStore } from "../../store";
+import { ProductsDrawerForm } from "./forms/ProductsDrawerForm";
 import { ProductsFilterForm } from "./ProductsFilterForm";
 import { ProductsTable } from "./ProductsTable";
-import { FieldData } from "./types";
+import { FieldData, Product } from "./types";
 
 export const Products = () => {
     const { user } = useAuthStore();
-
+    const { colorBgLayout } = theme.useToken().token;
     const [drawerOpen, setDrawerOpen] = useState(false);
-    const [editProduct, setEditProduct] = useState(null);
+    const [editProduct, setEditProduct] = useState<Product | null>(null);
 
     const [queryParams, setQueryParams] = useState({
         perPage: PER_PAGE,
@@ -62,6 +63,8 @@ export const Products = () => {
         }
     };
 
+    const onFormSubmit = () => {};
+
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
             <PageContentHeader
@@ -91,6 +94,14 @@ export const Products = () => {
                 }
                 // onEditUser={onEditUser}
                 // onDeleteUser={onDeleteUser}
+            />
+
+            <ProductsDrawerForm
+                drawerOpen={drawerOpen}
+                setDrawerOpen={setDrawerOpen}
+                // onFormSubmit={onFormSubmit}
+                colorBgLayout={colorBgLayout}
+                editProduct={editProduct}
             />
         </Space>
     );
