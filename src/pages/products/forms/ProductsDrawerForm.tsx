@@ -1,13 +1,14 @@
 import { Button, Drawer, Form, Space } from "antd";
 import { useEffect } from "react";
 
+import { makeFormData } from "../helper";
 import { Product } from "../types";
 import { ProductForm } from "./ProductForm";
 
 type Props = {
     drawerOpen: boolean;
     setDrawerOpen: (open: boolean) => void;
-    onFormSubmit: () => void;
+    onFormSubmit: (values: FormData) => void;
     colorBgLayout: string;
     editProduct: Product | null;
 };
@@ -23,7 +24,39 @@ export const ProductsDrawerForm: React.FC<Props> = ({
 
     const handleSubmit = async () => {
         await form.validateFields();
-        onFormSubmit(form.getFieldsValue());
+        const formPriceConfiguration = form.getFieldValue("priceConfiguration");
+        const pricing = Object.entries(formPriceConfiguration).reduce(
+            (acc, [key, value]) => {
+                const parsedKey = JSON.parse(key);
+                return {
+                    ...acc,
+                    [parsedKey.configurationKey]: {
+                        priceType: parsedKey.priceType,
+                        availableOptions: value
+                    }
+                };
+            },
+            {}
+        );
+        const formAttributes = form.getFieldValue("attributes");
+        const attributes = Object.entries(formAttributes).map(
+            ([key, value]) => {
+                return {
+                    name: key,
+                    value: value
+                };
+            }
+        );
+
+        const postData = {
+            ...form.getFieldsValue(),
+            image: form.getFieldValue("image"),
+            priceConfiguration: pricing,
+            attributes
+        };
+        const formData = makeFormData(postData);
+
+        onFormSubmit(formData);
         form.resetFields();
         setDrawerOpen(false);
     };

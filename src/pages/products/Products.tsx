@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 
 import { PageContentHeader } from "../../components/PageContentHeader/PageContentHeader";
 import { PER_PAGE } from "../../constants";
+import { useCreateProduct } from "../../hooks/useCreateProduct";
 import { useGetProducts } from "../../hooks/useGetProducts";
 import { useAuthStore } from "../../store";
 import { ProductsDrawerForm } from "./forms/ProductsDrawerForm";
@@ -32,6 +33,10 @@ export const Products = () => {
         isError,
         error
     } = useGetProducts(queryParams);
+
+    const {
+        createProductMutation: { mutate: createProductMutate }
+    } = useCreateProduct();
 
     const debouncedQUpdate = useMemo(
         () =>
@@ -63,7 +68,10 @@ export const Products = () => {
         }
     };
 
-    const onFormSubmit = () => {};
+    const onFormSubmit = (data: FormData) => {
+        console.log(data);
+        createProductMutate(data);
+    };
 
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
@@ -99,7 +107,7 @@ export const Products = () => {
             <ProductsDrawerForm
                 drawerOpen={drawerOpen}
                 setDrawerOpen={setDrawerOpen}
-                // onFormSubmit={onFormSubmit}
+                onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
                 editProduct={editProduct}
             />

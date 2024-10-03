@@ -49,3 +49,5 @@ export interface FieldData {
     name: string[];
     value?: string;
 }
+
+export type CreateProductData = Product & { image: { file: File } };
