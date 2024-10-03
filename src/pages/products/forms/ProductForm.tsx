@@ -1,16 +1,4 @@
-import { PlusOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import {
-    Card,
-    Col,
-    Form,
-    Input,
-    message,
-    Row,
-    Space,
-    Typography,
-    Upload
-} from "antd";
+import { Card, Col, Form, Input, Row, Space, Typography } from "antd";
 import { useState } from "react";
 
 import { Filter } from "../../../components/Filter/Filter";
@@ -22,12 +10,12 @@ import { Tenant } from "../../Users/types";
 import { Category } from "../types";
 import { Attributes } from "./Attributes";
 import { Pricing } from "./Pricing";
+import { ProductImage } from "./ProductImage";
 
 export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(
         null
     );
-    const [imageUrl, setImageUrl] = useState<string | null>();
 
     const { data: categories } = useGetCategories();
     const { data: tenants } = useGetTenants({
@@ -55,29 +43,6 @@ export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
             (category: Category) => category._id === categoryId
         );
         setSelectedCategory(selectedCategory);
-    };
-
-    const uploadConfig: UploadProps = {
-        name: "file",
-        multiple: false,
-        showUploadList: false,
-        beforeUpload: (file) => {
-            const isJpgOrPng =
-                file.type === "image/jpeg" ||
-                file.type === "image/png" ||
-                file.type === "image/jpeg";
-            if (!isJpgOrPng) {
-                message.error("You can only upload JPG/PNG/JPEG file!");
-            }
-
-            const isLt500K = file.size / 1024 < 500;
-            if (!isLt500K) {
-                message.error("Image must be smaller than 500KB!");
-            }
-
-            setImageUrl(URL.createObjectURL(file));
-            return false;
-        }
     };
 
     return (
@@ -142,40 +107,7 @@ export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
                     <Card title="Product Image" bordered={false}>
                         <Row gutter={24}>
                             <Col span={12}>
-                                <Form.Item
-                                    label=""
-                                    name="image"
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Please upload a products image"
-                                        }
-                                    ]}
-                                >
-                                    <Upload
-                                        listType="picture-card"
-                                        {...uploadConfig}
-                                    >
-                                        {imageUrl ? (
-                                            <img
-                                                src={imageUrl}
-                                                alt="avatar"
-                                                style={{
-                                                    width: "100%",
-                                                    height: "100%"
-                                                }}
-                                            />
-                                        ) : (
-                                            <Space direction="vertical">
-                                                <PlusOutlined />
-                                                <Typography.Text>
-                                                    Upload
-                                                </Typography.Text>
-                                            </Space>
-                                        )}
-                                    </Upload>
-                                </Form.Item>
+                                <ProductImage />
                             </Col>
                         </Row>
                     </Card>
