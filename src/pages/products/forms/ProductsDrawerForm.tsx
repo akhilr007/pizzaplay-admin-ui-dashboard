@@ -1,4 +1,4 @@
-import { Button, Drawer, Form, Space } from "antd";
+import { Button, Drawer, Form, FormInstance, Space } from "antd";
 import { useEffect } from "react";
 
 import { makeFormData } from "../helper";
@@ -6,22 +6,24 @@ import { Product } from "../types";
 import { ProductForm } from "./ProductForm";
 
 type Props = {
+    form: FormInstance;
     drawerOpen: boolean;
     setDrawerOpen: (open: boolean) => void;
     onFormSubmit: (values: FormData) => void;
     colorBgLayout: string;
     editProduct: Product | null;
+    isProductCreated: boolean;
 };
 
 export const ProductsDrawerForm: React.FC<Props> = ({
+    form,
     drawerOpen,
     setDrawerOpen,
     onFormSubmit,
     colorBgLayout,
-    editProduct
+    editProduct,
+    isProductCreated
 }) => {
-    const [form] = Form.useForm();
-
     const handleSubmit = async () => {
         await form.validateFields();
         const formPriceConfiguration = form.getFieldValue("priceConfiguration");
@@ -57,8 +59,6 @@ export const ProductsDrawerForm: React.FC<Props> = ({
         const formData = makeFormData(postData);
 
         onFormSubmit(formData);
-        form.resetFields();
-        setDrawerOpen(false);
     };
 
     // useEffect(() => {
@@ -91,7 +91,11 @@ export const ProductsDrawerForm: React.FC<Props> = ({
                     >
                         Cancel
                     </Button>
-                    <Button type="primary" onClick={handleSubmit}>
+                    <Button
+                        type="primary"
+                        onClick={handleSubmit}
+                        loading={isProductCreated}
+                    >
                         Submit
                     </Button>
                 </Space>

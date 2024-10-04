@@ -1,4 +1,4 @@
-import { Space, theme } from "antd";
+import { Form, Space, theme } from "antd";
 import { debounce } from "lodash";
 import { useMemo, useState } from "react";
 
@@ -17,6 +17,7 @@ export const Products = () => {
     const { colorBgLayout } = theme.useToken().token;
     const [drawerOpen, setDrawerOpen] = useState(false);
     const [editProduct, setEditProduct] = useState<Product | null>(null);
+    const [form] = Form.useForm();
 
     const [queryParams, setQueryParams] = useState({
         perPage: PER_PAGE,
@@ -35,8 +36,14 @@ export const Products = () => {
     } = useGetProducts(queryParams);
 
     const {
-        createProductMutation: { mutate: createProductMutate }
-    } = useCreateProduct();
+        createProductMutation: {
+            mutate: createProductMutate,
+            isPending: isProductCreated
+        }
+    } = useCreateProduct(() => {
+        form.resetFields();
+        setDrawerOpen(false);
+    });
 
     const debouncedQUpdate = useMemo(
         () =>
@@ -69,7 +76,6 @@ export const Products = () => {
     };
 
     const onFormSubmit = (data: FormData) => {
-        console.log(data);
         createProductMutate(data);
     };
 
@@ -105,11 +111,13 @@ export const Products = () => {
             />
 
             <ProductsDrawerForm
+                form={form}
                 drawerOpen={drawerOpen}
                 setDrawerOpen={setDrawerOpen}
                 onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
                 editProduct={editProduct}
+                isProductCreated={isProductCreated}
             />
         </Space>
     );

@@ -3,7 +3,7 @@ import { notification } from "antd";
 
 import { createProduct } from "../http/api";
 
-export const useCreateProduct = () => {
+export const useCreateProduct = (onSuccess?: () => void) => {
     const queryClient = useQueryClient();
     const createProductMutation = useMutation({
         mutationKey: ["createProduct"],
@@ -17,7 +17,17 @@ export const useCreateProduct = () => {
             });
             notification.success({
                 message: "Product successfully created",
-                duration: 3
+                duration: 3,
+                placement: "top"
+            });
+
+            onSuccess?.();
+        },
+        onError: () => {
+            notification.error({
+                message: "Failed to create product",
+                duration: 3,
+                placement: "top"
             });
         }
     });
