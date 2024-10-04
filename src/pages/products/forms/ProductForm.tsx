@@ -6,6 +6,7 @@ import { SwitchComponent } from "../../../components/Switch/Switch";
 import { OPTION_PER_PAGE } from "../../../constants";
 import { useGetCategories } from "../../../hooks/useGetCategories";
 import { useGetTenants } from "../../../hooks/useGetTenants";
+import { useAuthStore } from "../../../store";
 import { Tenant } from "../../Users/types";
 import { Category } from "../types";
 import { Attributes } from "./Attributes";
@@ -13,6 +14,7 @@ import { Pricing } from "./Pricing";
 import { ProductImage } from "./ProductImage";
 
 export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
+    const { user } = useAuthStore();
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(
         null
     );
@@ -112,25 +114,27 @@ export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
                         </Row>
                     </Card>
 
-                    <Card title="Tenant Info" bordered={false}>
-                        <Row gutter={24}>
-                            <Col span={24}>
-                                <Filter
-                                    label="Restaurant:"
-                                    placeholder="Select a Restaurant"
-                                    name="tenantId"
-                                    options={tenantOption}
-                                    rules={[
-                                        {
-                                            required: true,
-                                            message:
-                                                "Please choose a restaurant"
-                                        }
-                                    ]}
-                                />
-                            </Col>
-                        </Row>
-                    </Card>
+                    {user?.role !== "manager" && (
+                        <Card title="Tenant Info" bordered={false}>
+                            <Row gutter={24}>
+                                <Col span={24}>
+                                    <Filter
+                                        label="Restaurant:"
+                                        placeholder="Select a Restaurant"
+                                        name="tenantId"
+                                        options={tenantOption}
+                                        rules={[
+                                            {
+                                                required: true,
+                                                message:
+                                                    "Please choose a restaurant"
+                                            }
+                                        ]}
+                                    />
+                                </Col>
+                            </Row>
+                        </Card>
+                    )}
 
                     {selectedCategory && (
                         <Pricing selectedCategory={selectedCategory} />

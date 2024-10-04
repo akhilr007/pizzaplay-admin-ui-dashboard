@@ -1,6 +1,7 @@
 import { Button, Drawer, Form, FormInstance, Space } from "antd";
 import { useEffect } from "react";
 
+import { useAuthStore } from "../../../store";
 import { makeFormData } from "../helper";
 import { Product } from "../types";
 import { ProductForm } from "./ProductForm";
@@ -24,6 +25,8 @@ export const ProductsDrawerForm: React.FC<Props> = ({
     editProduct,
     isProductCreated
 }) => {
+    const { user } = useAuthStore();
+
     const handleSubmit = async () => {
         await form.validateFields();
         const formPriceConfiguration = form.getFieldValue("priceConfiguration");
@@ -52,6 +55,10 @@ export const ProductsDrawerForm: React.FC<Props> = ({
 
         const postData = {
             ...form.getFieldsValue(),
+            tenantId:
+                user?.role === "manager"
+                    ? user.tenant?.id
+                    : form.getFieldValue("tenantId"),
             image: form.getFieldValue("image"),
             priceConfiguration: pricing,
             attributes
