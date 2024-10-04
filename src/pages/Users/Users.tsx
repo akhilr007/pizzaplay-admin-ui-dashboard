@@ -1,4 +1,4 @@
-import { Space, theme } from "antd";
+import { Form, Space, theme } from "antd";
 import { debounce } from "lodash";
 import React, { useState } from "react";
 
@@ -15,6 +15,7 @@ import { UsersFilterForm } from "./UsersFilterForm";
 import { UsersTable } from "./UsersTable";
 
 export const Users: React.FC = () => {
+    const [form] = Form.useForm();
     const { colorBgLayout } = theme.useToken().token;
     const { user } = useAuthStore();
     const [drawerOpen, setDrawerOpen] = useState(false);
@@ -34,8 +35,14 @@ export const Users: React.FC = () => {
     } = useGetUsers(queryParams, user?.role === "admin");
 
     const {
-        createUserMutation: { mutate: createUserMutate }
-    } = useCreateUser();
+        createUserMutation: {
+            mutate: createUserMutate,
+            isPending: isUserCreated
+        }
+    } = useCreateUser(() => {
+        form.resetFields();
+        setDrawerOpen(false);
+    });
 
     const {
         updateUserMutation: { mutate: updateUserMutate }
@@ -132,11 +139,13 @@ export const Users: React.FC = () => {
             />
 
             <UserDrawerForm
+                form={form}
                 drawerOpen={drawerOpen}
                 setDrawerOpen={setDrawerOpen}
                 onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
                 editUser={editUser}
+                isUserCreated={isUserCreated}
             />
         </Space>
     );

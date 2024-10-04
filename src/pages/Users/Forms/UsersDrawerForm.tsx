@@ -1,31 +1,31 @@
-import { Button, Drawer, Form, Space } from "antd";
+import { Button, Drawer, Form, FormInstance, Space } from "antd";
 import { useEffect } from "react";
 
 import { CreateUser, User } from "../types";
 import { UserForm } from "./UserForm";
 
 type Props = {
+    form: FormInstance;
     drawerOpen: boolean;
     setDrawerOpen: (open: boolean) => void;
     onFormSubmit: (values: CreateUser) => void;
     colorBgLayout: string;
     editUser: User | null;
+    isUserCreated: boolean;
 };
 
 export const UserDrawerForm: React.FC<Props> = ({
+    form,
     drawerOpen,
     setDrawerOpen,
     onFormSubmit,
     colorBgLayout,
-    editUser
+    editUser,
+    isUserCreated
 }) => {
-    const [form] = Form.useForm();
-
     const handleSubmit = async () => {
         await form.validateFields();
         onFormSubmit(form.getFieldsValue());
-        form.resetFields();
-        setDrawerOpen(false);
     };
 
     useEffect(() => {
@@ -55,7 +55,11 @@ export const UserDrawerForm: React.FC<Props> = ({
                     >
                         Cancel
                     </Button>
-                    <Button type="primary" onClick={handleSubmit}>
+                    <Button
+                        type="primary"
+                        onClick={handleSubmit}
+                        loading={isUserCreated}
+                    >
                         Submit
                     </Button>
                 </Space>
