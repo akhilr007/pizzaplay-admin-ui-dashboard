@@ -1,7 +1,8 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Modal, Space, Table } from "antd";
+import { Button, Space, Table } from "antd";
 import { useState } from "react";
 
+import { DeleteModal } from "../../components/DeleteModal/DeleteModal";
 import { User } from "./types";
 
 type Props = {
@@ -122,17 +123,12 @@ export const UsersTable: React.FC<Props> = ({
                     }
                 }}
             />
-            <Modal
-                title="Confirm Deletion"
-                open={isModalVisible}
-                onOk={handleDelete}
-                onCancel={handleCancel}
-                okText="Yes, Delete"
-                cancelText="Cancel"
-                width={500}
-            >
-                <p>Are you sure you want to delete this user?</p>
-            </Modal>
+            <DeleteModal
+                name="user"
+                handleCancel={handleCancel}
+                handleDelete={handleDelete}
+                isModalVisible={isModalVisible}
+            />
         </>
     );
 };

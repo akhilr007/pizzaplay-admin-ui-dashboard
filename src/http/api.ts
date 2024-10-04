@@ -51,3 +51,6 @@ export const updateProduct = (product: FormData, id: string) =>
     api.put(`${CATALOG_SERVICE}/products/${id}`, product, {
         headers: { "Content-Type": "multipart/form-data" }
     });
+
+export const deleteProduct = (id: string) =>
+    api.delete(`${CATALOG_SERVICE}/products/${id}`);

@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import { PageContentHeader } from "../../components/PageContentHeader/PageContentHeader";
 import { PER_PAGE } from "../../constants";
 import { useCreateProduct } from "../../hooks/useCreateProduct";
+import { useDeleteProduct } from "../../hooks/useDeleteProduct";
 import { useGetProducts } from "../../hooks/useGetProducts";
 import { useUpdateProduct } from "../../hooks/useUpdateProduct";
 import { useAuthStore } from "../../store";
@@ -56,6 +57,10 @@ export const Products = () => {
         setDrawerOpen(false);
     });
 
+    const {
+        deleteProductMutation: { mutate: deleteProductMutate }
+    } = useDeleteProduct();
+
     const debouncedQUpdate = useMemo(
         () =>
             debounce((value: string) => {
@@ -101,6 +106,10 @@ export const Products = () => {
         setDrawerOpen(true);
     };
 
+    const onDeleteProduct = (productId: string) => {
+        deleteProductMutate(productId);
+    };
+
     return (
         <Space direction="vertical" style={{ width: "100%" }} size="large">
             <PageContentHeader
@@ -129,7 +138,7 @@ export const Products = () => {
                     setQueryParams((prev) => ({ ...prev, currentPage: page }))
                 }
                 onEditProduct={onEditProduct}
-                // onDeleteUser={onDeleteUser}
+                onDeleteProduct={onDeleteProduct}
             />
 
             <ProductsDrawerForm

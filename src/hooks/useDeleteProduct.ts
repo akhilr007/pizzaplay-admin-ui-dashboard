@@ -2,32 +2,32 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { notification } from "antd";
 
-import { deleteUser } from "../http/api";
+import { deleteProduct } from "../http/api";
 
-export const useDeleteUser = () => {
+export const useDeleteProduct = () => {
     const queryClient = useQueryClient();
 
-    const deleteUserMutation = useMutation({
-        mutationFn: async (id: number) => {
-            const { data } = await deleteUser(id);
+    const deleteProductMutation = useMutation({
+        mutationFn: async (id: string) => {
+            const { data } = await deleteProduct(id);
             return data;
         },
         onSuccess: () => {
             queryClient.invalidateQueries({
-                queryKey: ["users"]
+                queryKey: ["products"]
             });
             notification.success({
-                message: "User deleted successfully",
+                message: "Product deleted successfully",
                 duration: 3,
                 placement: "top"
             });
         },
         onError: () => {
             notification.error({
-                message: "Failed to delete user"
+                message: "Failed to delete Product"
             });
         }
     });
 
-    return { deleteUserMutation };
+    return { deleteProductMutation };
 };

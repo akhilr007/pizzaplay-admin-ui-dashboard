@@ -1,7 +1,9 @@
 import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Button, Image, Modal, Space, Table, Tag, Typography } from "antd";
+import { Button, Image, Space, Table, Tag, Typography } from "antd";
 import { format } from "date-fns";
+import { useState } from "react";
 
+import { DeleteModal } from "../../components/DeleteModal/DeleteModal";
 import { Product } from "./types";
 
 type Props = {
@@ -12,6 +14,7 @@ type Props = {
     total: number | undefined;
     onPageChange: (page: number) => void;
     onEditProduct: (product: Product) => void;
+    onDeleteProduct: (id: string) => void;
 };
 
 export const ProductsTable: React.FC<Props> = ({
@@ -21,8 +24,31 @@ export const ProductsTable: React.FC<Props> = ({
     perPage,
     total,
     onPageChange,
-    onEditProduct
+    onEditProduct,
+    onDeleteProduct
 }) => {
+    const [isModalVisible, setIsModalVisible] = useState(false);
+    const [selectedProductId, setSelectedProductId] = useState<string | null>(
+        null
+    );
+
+    const showDeleteConfirm = (id: string) => {
+        setSelectedProductId(id);
+        setIsModalVisible(true);
+    };
+
+    const handleDelete = () => {
+        if (selectedProductId) {
+            onDeleteProduct(selectedProductId);
+        }
+        setIsModalVisible(false);
+    };
+
+    const handleCancel = () => {
+        setSelectedProductId(null);
+        setIsModalVisible(false);
+    };
+
     const columns = [
         {
             title: "Name",
@@ -62,7 +88,7 @@ export const ProductsTable: React.FC<Props> = ({
             title: "Created At",
             dataIndex: "createdAt",
             key: "createdAt",
-            render: (text: string, record: Product) => {
+            render: (_text: string, record: Product) => {
                 return (
                     <Typography.Text>
                         {format(new Date(record.createdAt), "dd/MM/yyyy HH:mm")}
@@ -86,7 +112,9 @@ export const ProductsTable: React.FC<Props> = ({
                             icon={
                                 <DeleteOutlined
                                     style={{ fontSize: "24px" }}
-                                    onClick={() => {}}
+                                    onClick={() =>
+                                        showDeleteConfirm(record._id)
+                                    }
                                 />
                             }
                         ></Button>
@@ -113,17 +141,12 @@ export const ProductsTable: React.FC<Props> = ({
                     }
                 }}
             />
-            <Modal
-            // title="Confirm Deletion"
-            // open={isModalVisible}
-            // onOk={handleDelete}
-            // onCancel={handleCancel}
-            // okText="Yes, Delete"
-            // cancelText="Cancel"
-            // width={500}
-            >
-                <p>Are you sure you want to delete this user?</p>
-            </Modal>
+            <DeleteModal
+                name="product"
+                handleCancel={handleCancel}
+                handleDelete={handleDelete}
+                isModalVisible={isModalVisible}
+            />
         </>
     );
 };
