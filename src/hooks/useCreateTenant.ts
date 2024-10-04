@@ -1,9 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { notification } from "antd";
 
 import { createTenant } from "../http/api";
 import { Tenant } from "../pages/Users/types";
 
-export const useCreateTenant = () => {
+export const useCreateTenant = (onSuccess?: () => void) => {
     const queryClient = useQueryClient();
     const createTenantMutation = useMutation({
         mutationKey: ["createTenant"],
@@ -12,10 +13,23 @@ export const useCreateTenant = () => {
             return data;
         },
         onSuccess: async () => {
-            console.log("Tenant created successfully");
-
             queryClient.invalidateQueries({
                 queryKey: ["tenants"]
+            });
+
+            notification.success({
+                message: "Restaurant created successfully",
+                duration: 3,
+                placement: "top"
+            });
+
+            onSuccess?.();
+        },
+        onError: () => {
+            notification.error({
+                message: "Failed to Create Restaurant",
+                duration: 3,
+                placement: "top"
             });
         }
     });

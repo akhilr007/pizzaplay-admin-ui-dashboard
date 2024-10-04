@@ -1,4 +1,4 @@
-import { Space, theme } from "antd";
+import { Form, Space, theme } from "antd";
 import { debounce } from "lodash";
 import { useState } from "react";
 import React from "react";
@@ -23,6 +23,7 @@ export const Tenants = () => {
         q: ""
     });
     const [editTenant, setEditTenant] = useState<Tenant | null>(null);
+    const [form] = Form.useForm();
 
     const {
         data: tenants,
@@ -32,8 +33,14 @@ export const Tenants = () => {
     } = useGetTenants(queryParams);
 
     const {
-        createTenantMutation: { mutate: createTenantMutate }
-    } = useCreateTenant();
+        createTenantMutation: {
+            mutate: createTenantMutate,
+            isPending: isTenantCreated
+        }
+    } = useCreateTenant(() => {
+        form.resetFields();
+        setDrawerOpen(false);
+    });
 
     const {
         updateTenantMutation: { mutate: updateTenantMutate }
@@ -117,11 +124,13 @@ export const Tenants = () => {
             />
 
             <TenantsDrawerForm
+                form={form}
                 drawerOpen={drawerOpen}
                 setDrawerOpen={setDrawerOpen}
                 onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
                 editTenant={editTenant}
+                isTenantCreated={isTenantCreated}
             />
         </Space>
     );

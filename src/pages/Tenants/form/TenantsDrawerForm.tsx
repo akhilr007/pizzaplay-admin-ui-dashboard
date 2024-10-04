@@ -1,4 +1,4 @@
-import { Button, Drawer, Form, Space } from "antd";
+import { Button, Drawer, Form, FormInstance, Space } from "antd";
 import { useEffect } from "react";
 
 import { Tenant } from "../../Users/types";
@@ -6,27 +6,27 @@ import { CreateTenant } from "../types";
 import { TenantForm } from "./TenantForm";
 
 type Props = {
+    form: FormInstance;
     drawerOpen: boolean;
     setDrawerOpen: (open: boolean) => void;
     onFormSubmit: (values: CreateTenant) => void;
     colorBgLayout: string;
     editTenant: Tenant | null;
+    isTenantCreated: boolean;
 };
 
 export const TenantsDrawerForm: React.FC<Props> = ({
+    form,
     drawerOpen,
     setDrawerOpen,
     onFormSubmit,
     colorBgLayout,
-    editTenant
+    editTenant,
+    isTenantCreated
 }) => {
-    const [form] = Form.useForm();
-
     const handleSubmit = async () => {
         await form.validateFields();
         onFormSubmit(form.getFieldsValue());
-        form.resetFields();
-        setDrawerOpen(false);
     };
 
     useEffect(() => {
@@ -56,7 +56,11 @@ export const TenantsDrawerForm: React.FC<Props> = ({
                     >
                         Cancel
                     </Button>
-                    <Button type="primary" onClick={handleSubmit}>
+                    <Button
+                        type="primary"
+                        onClick={handleSubmit}
+                        loading={isTenantCreated}
+                    >
                         Submit
                     </Button>
                 </Space>
