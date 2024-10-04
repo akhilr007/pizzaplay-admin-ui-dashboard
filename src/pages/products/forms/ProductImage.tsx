@@ -1,9 +1,29 @@
 import { PlusOutlined } from "@ant-design/icons";
 import { Form, message, Space, Typography, Upload, UploadProps } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
-export const ProductImage = () => {
-    const [imageUrl, setImageUrl] = useState<string | null>();
+interface ProductImageProps {
+    initialImage?: string;
+}
+
+export const ProductImage: React.FC<ProductImageProps> = ({ initialImage }) => {
+    const [imageUrl, setImageUrl] = useState<string | null>(
+        initialImage || null
+    );
+    let objectUrl: string | null = null;
+
+    useEffect(() => {
+        // Update imageUrl when initialImage prop changes
+        if (initialImage) {
+            setImageUrl(initialImage);
+        }
+        return () => {
+            // Revoke object URL when component unmounts or a new file is uploaded
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+    }, [initialImage, objectUrl]);
 
     const uploadConfig: UploadProps = {
         name: "file",
@@ -16,26 +36,36 @@ export const ProductImage = () => {
                 file.type === "image/jpeg";
             if (!isJpgOrPng) {
                 message.error("You can only upload JPG/PNG/JPEG file!");
+                return Upload.LIST_IGNORE;
             }
 
             const isLt500K = file.size / 1024 < 500;
             if (!isLt500K) {
                 message.error("Image must be smaller than 500KB!");
+                return Upload.LIST_IGNORE;
             }
 
-            setImageUrl(URL.createObjectURL(file));
-            return false;
+            // Revoke the previous object URL to prevent memory leaks
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+
+            // Create a new object URL for the file
+            objectUrl = URL.createObjectURL(file);
+            setImageUrl(objectUrl);
+            return false; // Prevent automatic upload
         }
     };
 
     return (
         <Form.Item
+            valuePropName="avatar"
             label=""
             name="image"
             rules={[
                 {
                     required: true,
-                    message: "Please upload a products image"
+                    message: "Please upload a product image"
                 }
             ]}
         >

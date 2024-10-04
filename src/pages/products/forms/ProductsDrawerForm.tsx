@@ -68,14 +68,36 @@ export const ProductsDrawerForm: React.FC<Props> = ({
         onFormSubmit(formData);
     };
 
-    // useEffect(() => {
-    //     if (editProduct) {
-    //         form.setFieldsValue({
-    //             ...editProduct,
-    //             tenantId: editProduct.tenant?.id
-    //         });
-    //     }
-    // }, [editUser, form]);
+    useEffect(() => {
+        if (editProduct) {
+            const priceConfiguration = Object.entries(
+                editProduct.priceConfiguration
+            ).reduce((acc, [key, value]) => {
+                const stringifiedKey = JSON.stringify({
+                    configurationKey: key,
+                    priceType: value.priceType
+                });
+
+                return {
+                    ...acc,
+                    [stringifiedKey]: value.availableOptions
+                };
+            }, {});
+
+            const attributes = editProduct.attributes.reduce((acc, item) => {
+                return {
+                    ...acc,
+                    [item.name]: item.value
+                };
+            }, {});
+
+            form.setFieldsValue({
+                ...editProduct,
+                priceConfiguration: priceConfiguration,
+                attributes: attributes
+            });
+        }
+    }, [editProduct, form]);
 
     return (
         <Drawer
@@ -109,7 +131,7 @@ export const ProductsDrawerForm: React.FC<Props> = ({
             }
         >
             <Form form={form} layout="vertical">
-                <ProductForm isEditMode={!!editProduct} />
+                <ProductForm form={form} editProduct={editProduct} />
             </Form>
         </Drawer>
     );

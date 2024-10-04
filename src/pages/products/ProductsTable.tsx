@@ -11,6 +11,7 @@ type Props = {
     perPage: number;
     total: number | undefined;
     onPageChange: (page: number) => void;
+    onEditProduct: (product: Product) => void;
 };
 
 export const ProductsTable: React.FC<Props> = ({
@@ -19,7 +20,8 @@ export const ProductsTable: React.FC<Props> = ({
     currentPage,
     perPage,
     total,
-    onPageChange
+    onPageChange,
+    onEditProduct
 }) => {
     const columns = [
         {
@@ -77,7 +79,7 @@ export const ProductsTable: React.FC<Props> = ({
                         <Button
                             type="link"
                             icon={<EditOutlined style={{ fontSize: "24px" }} />}
-                            onClick={() => {}}
+                            onClick={() => onEditProduct(record)}
                         ></Button>
                         <Button
                             type="link"

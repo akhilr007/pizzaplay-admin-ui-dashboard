@@ -1,5 +1,14 @@
-import { Card, Col, Form, Input, Row, Space, Typography } from "antd";
-import { useState } from "react";
+import {
+    Card,
+    Col,
+    Form,
+    FormInstance,
+    Input,
+    Row,
+    Space,
+    Typography
+} from "antd";
+import { useCallback, useEffect, useState } from "react";
 
 import { Filter } from "../../../components/Filter/Filter";
 import { SwitchComponent } from "../../../components/Switch/Switch";
@@ -8,12 +17,17 @@ import { useGetCategories } from "../../../hooks/useGetCategories";
 import { useGetTenants } from "../../../hooks/useGetTenants";
 import { useAuthStore } from "../../../store";
 import { Tenant } from "../../Users/types";
-import { Category } from "../types";
+import { Category, Product } from "../types";
 import { Attributes } from "./Attributes";
 import { Pricing } from "./Pricing";
 import { ProductImage } from "./ProductImage";
 
-export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
+interface ProductForm {
+    form: FormInstance;
+    editProduct: Product | null;
+}
+
+export const ProductForm: React.FC<ProductForm> = ({ form, editProduct }) => {
     const { user } = useAuthStore();
     const [selectedCategory, setSelectedCategory] = useState<Category | null>(
         null
@@ -36,16 +50,25 @@ export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
     const tenantOption = tenants?.data?.map((tenant: Tenant) => {
         return {
             label: tenant?.name,
-            value: tenant?.id
+            value: String(tenant?.id)
         };
     });
 
-    const handleCategoryChange = (categoryId: string) => {
-        const selectedCategory = categories?.find(
-            (category: Category) => category._id === categoryId
-        );
-        setSelectedCategory(selectedCategory);
-    };
+    const handleCategoryChange = useCallback(
+        (categoryId: string) => {
+            const selectedCategory = categories?.find(
+                (category: Category) => category._id === categoryId
+            );
+            setSelectedCategory(selectedCategory);
+        },
+        [categories]
+    );
+
+    useEffect(() => {
+        if (editProduct) {
+            handleCategoryChange(editProduct.categoryId);
+        }
+    }, [editProduct, handleCategoryChange]);
 
     return (
         <Row>
@@ -109,7 +132,9 @@ export const ProductForm = ({ isEditMode }: { isEditMode: boolean }) => {
                     <Card title="Product Image" bordered={false}>
                         <Row gutter={24}>
                             <Col span={12}>
-                                <ProductImage />
+                                <ProductImage
+                                    initialImage={form.getFieldValue("image")}
+                                />
                             </Col>
                         </Row>
                     </Card>

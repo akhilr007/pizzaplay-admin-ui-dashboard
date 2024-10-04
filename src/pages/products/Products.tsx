@@ -6,6 +6,7 @@ import { PageContentHeader } from "../../components/PageContentHeader/PageConten
 import { PER_PAGE } from "../../constants";
 import { useCreateProduct } from "../../hooks/useCreateProduct";
 import { useGetProducts } from "../../hooks/useGetProducts";
+import { useUpdateProduct } from "../../hooks/useUpdateProduct";
 import { useAuthStore } from "../../store";
 import { ProductsDrawerForm } from "./forms/ProductsDrawerForm";
 import { ProductsFilterForm } from "./ProductsFilterForm";
@@ -45,6 +46,16 @@ export const Products = () => {
         setDrawerOpen(false);
     });
 
+    const {
+        updateProductMutation: {
+            mutate: updateProductMutate,
+            isPending: isProductUpdated
+        }
+    } = useUpdateProduct(() => {
+        form.resetFields();
+        setDrawerOpen(false);
+    });
+
     const debouncedQUpdate = useMemo(
         () =>
             debounce((value: string) => {
@@ -62,8 +73,6 @@ export const Products = () => {
             .map((field) => ({ [field.name[0]]: field.value }))
             .reduce((acc, field) => ({ ...acc, ...field }), {});
 
-        console.log(changedFilterFields);
-
         if ("q" in changedFilterFields) {
             debouncedQUpdate(changedFilterFields.q ?? "");
         } else {
@@ -76,7 +85,20 @@ export const Products = () => {
     };
 
     const onFormSubmit = (data: FormData) => {
-        createProductMutate(data);
+        if (editProduct) {
+            const productData = {
+                product: data,
+                id: editProduct._id
+            };
+            updateProductMutate(productData);
+        } else {
+            createProductMutate(data);
+        }
+    };
+
+    const onEditProduct = (product: Product) => {
+        setEditProduct(product);
+        setDrawerOpen(true);
     };
 
     return (
@@ -106,7 +128,7 @@ export const Products = () => {
                 onPageChange={(page: number) =>
                     setQueryParams((prev) => ({ ...prev, currentPage: page }))
                 }
-                // onEditUser={onEditUser}
+                onEditProduct={onEditProduct}
                 // onDeleteUser={onDeleteUser}
             />
 
@@ -117,7 +139,7 @@ export const Products = () => {
                 onFormSubmit={onFormSubmit}
                 colorBgLayout={colorBgLayout}
                 editProduct={editProduct}
-                isProductCreated={isProductCreated}
+                isProductCreated={isProductCreated || isProductUpdated}
             />
         </Space>
     );
